@@ -1,6 +1,5 @@
 package com.millsofmn.android.schoolplanner.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ public class MentorListAdapter extends RecyclerView.Adapter<MentorListAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mentor, parent, false);
+        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mentor_details, parent, false);
 
         return new ViewHolder(cardView, onMentorListener);
     }

@@ -1,10 +1,10 @@
-package com.millsofmn.android.schoolplanner;
+package com.millsofmn.android.schoolplanner.ui.mentor;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.adapter.MentorListAdapter;
 import com.millsofmn.android.schoolplanner.db.entity.Mentor;
 import com.millsofmn.android.schoolplanner.viewmodel.MentorViewModel;
@@ -13,15 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
 import android.widget.Toast;
 
-public class MentorsActivity extends AppCompatActivity implements MentorListAdapter.OnMentorListener {
+public class MentorListActivity extends AppCompatActivity implements MentorListAdapter.OnMentorListener {
 
     public static final int ADD_MENTOR_REQUEST = 1;
     public static final int EDIT_MENTOR_REQUEST = 2;
@@ -32,7 +30,7 @@ public class MentorsActivity extends AppCompatActivity implements MentorListAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mentors);
+        setContentView(R.layout.activity_mentor_list);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -42,7 +40,7 @@ public class MentorsActivity extends AppCompatActivity implements MentorListAdap
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener((view) -> {
-                Intent intent = new Intent(this, MentorActivity.class);
+                Intent intent = new Intent(this, MentorDetailsActivity.class);
                 startActivityForResult(intent, ADD_MENTOR_REQUEST);
             });
 
@@ -60,8 +58,8 @@ public class MentorsActivity extends AppCompatActivity implements MentorListAdap
 
     @Override
     public void onMentorClick(int position) {
-        Intent intent = new Intent(this, MentorActivity.class);
-        intent.putExtra(MentorActivity.MENTOR_ID_EXTRA, mentorListAdapter.getSelectedMentor(position).getId());
+        Intent intent = new Intent(this, MentorDetailsActivity.class);
+        intent.putExtra(MentorDetailsActivity.MENTOR_ID_EXTRA, mentorListAdapter.getSelectedMentor(position).getId());
         startActivityForResult(intent, EDIT_MENTOR_REQUEST);
     }
 
@@ -75,19 +73,19 @@ public class MentorsActivity extends AppCompatActivity implements MentorListAdap
             String msg;
 
             Mentor mentor = new Mentor();
-            mentor.setName(data.getStringExtra(MentorActivity.MENTOR_NAME_EXTRA));
-            mentor.setPhoneNumber(data.getStringExtra(MentorActivity.MENTOR_PHONE_EXTRA));
-            mentor.setEmailAddress(data.getStringExtra(MentorActivity.MENTOR_EMAIL_EXTRA));
+            mentor.setName(data.getStringExtra(MentorDetailsActivity.MENTOR_NAME_EXTRA));
+            mentor.setPhoneNumber(data.getStringExtra(MentorDetailsActivity.MENTOR_PHONE_EXTRA));
+            mentor.setEmailAddress(data.getStringExtra(MentorDetailsActivity.MENTOR_EMAIL_EXTRA));
 
-            int id = data.getIntExtra(MentorActivity.MENTOR_ID_EXTRA, -1);
+            int id = data.getIntExtra(MentorDetailsActivity.MENTOR_ID_EXTRA, -1);
 
             if(id > -1){
                 mentor.setId(id);
                 mentorViewModel.update(mentor);
-                msg = "Mentor Updated";
+                msg = "Mentor " + mentor.getName() + " Updated";
             } else {
                 mentorViewModel.insert(mentor);
-                msg = "Mentor Created";
+                msg = "Mentor " + mentor.getName() + " Created";
             }
 
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();

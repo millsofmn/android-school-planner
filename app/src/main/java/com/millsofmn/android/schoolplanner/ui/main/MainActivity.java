@@ -1,4 +1,4 @@
-package com.millsofmn.android.schoolplanner;
+package com.millsofmn.android.schoolplanner.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.millsofmn.android.schoolplanner.R;
+import com.millsofmn.android.schoolplanner.ui.mentor.MentorListActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,12 +25,9 @@ public class MainActivity extends AppCompatActivity {
         btnNavMentors = findViewById(R.id.btn_nav_mentor);
         btmNavMangeTerm = findViewById(R.id.btn_nav_terms);
 
-        btnNavMentors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MentorsActivity.class);
-                startActivity(intent);
-            }
+        btnNavMentors.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), MentorListActivity.class);
+            startActivity(intent);
         });
 
         btmNavMangeTerm.setOnClickListener(new View.OnClickListener() {

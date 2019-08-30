@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MentorActivity">
+    tools:context=".ui.mentor.MentorDetailsActivity">
 
     <EditText
         android:id="@+id/et_mentor_name"

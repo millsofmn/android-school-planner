@@ -1,4 +1,4 @@
-package com.millsofmn.android.schoolplanner;
+package com.millsofmn.android.schoolplanner.ui.mentor;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -7,15 +7,15 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.db.entity.Mentor;
 import com.millsofmn.android.schoolplanner.viewmodel.MentorViewModel;
 
-public class MentorActivity extends AppCompatActivity {
+public class MentorDetailsActivity extends AppCompatActivity {
 
     public static final String MENTOR_ID_EXTRA = "mentor_id";
     public static final String MENTOR_NAME_EXTRA = "mentor_name";
@@ -34,7 +34,7 @@ public class MentorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mentor);
+        setContentView(R.layout.activity_mentor_details);
 
 
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
@@ -46,10 +46,10 @@ public class MentorActivity extends AppCompatActivity {
         Button btnDelete = findViewById(R.id.btn_mentor_delete);
         btnDelete.setOnClickListener(view -> {
             if (thisMentor != null) {
-                Toast.makeText(getApplicationContext(), "Mentor " + thisMentor.getName() + " Deleted", Toast.LENGTH_SHORT).show();
-                mentorViewModel.delete(thisMentor);
+                delete();
+            } else {
+                finish();
             }
-            finish();
         });
 
         Button btnSave = findViewById(R.id.btn_mentor_save);
@@ -104,4 +104,10 @@ public class MentorActivity extends AppCompatActivity {
         }
     }
 
+    private void delete(){
+        Toast.makeText(getApplicationContext(), "Mentor " + thisMentor.getName() + " Deleted", Toast.LENGTH_SHORT).show();
+        mentorViewModel.delete(thisMentor);
+
+        finish();
+    }
 }

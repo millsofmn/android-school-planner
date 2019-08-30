@@ -10,14 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MentorActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ui.mentor.MentorDetailsActivity"
+            android:parentActivityName=".ui.main.MainActivity" />
         <activity
-            android:name=".MentorsActivity"
+            android:name=".ui.mentor.MentorListActivity"
             android:label="@string/title_activity_mentors"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
