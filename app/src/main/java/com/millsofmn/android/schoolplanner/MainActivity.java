@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         btnNavMentors.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MentorActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MentorsActivity.class);
                 startActivity(intent);
             }
         });
