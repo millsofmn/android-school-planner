@@ -46,6 +46,7 @@ public class MentorActivity extends AppCompatActivity {
         Button btnDelete = findViewById(R.id.btn_mentor_delete);
         btnDelete.setOnClickListener(view -> {
             if (thisMentor != null) {
+                Toast.makeText(getApplicationContext(), "Mentor " + thisMentor.getName() + " Deleted", Toast.LENGTH_SHORT).show();
                 mentorViewModel.delete(thisMentor);
             }
             finish();

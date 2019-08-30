@@ -10,6 +10,7 @@ import com.millsofmn.android.schoolplanner.db.entity.Mentor;
 import com.millsofmn.android.schoolplanner.viewmodel.MentorViewModel;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,6 +37,9 @@ public class MentorsActivity extends AppCompatActivity implements MentorListAdap
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener((view) -> {
                 Intent intent = new Intent(this, MentorActivity.class);
@@ -56,7 +60,6 @@ public class MentorsActivity extends AppCompatActivity implements MentorListAdap
 
     @Override
     public void onMentorClick(int position) {
-        Toast.makeText(getApplicationContext(), "You clicked on a mentor", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MentorActivity.class);
         intent.putExtra(MentorActivity.MENTOR_ID_EXTRA, mentorListAdapter.getSelectedMentor(position).getId());
         startActivityForResult(intent, EDIT_MENTOR_REQUEST);

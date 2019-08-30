@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -45,6 +46,7 @@ public class Assessment implements Parcelable {
     }
 
 
+    @Ignore
     public Assessment(int courseId, @NonNull String title, @NonNull String performanceType, Date dueDate, boolean alertOnDueDate) {
         this.courseId = courseId;
         this.title = title;
@@ -53,6 +55,7 @@ public class Assessment implements Parcelable {
         this.alertOnDueDate = alertOnDueDate;
     }
 
+    @Ignore
     public Assessment(int id, int courseId, @NonNull String title, @NonNull String performanceType, Date dueDate, boolean alertOnDueDate) {
         this.id = id;
         this.courseId = courseId;

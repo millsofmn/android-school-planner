@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 
 @Entity(
@@ -34,6 +35,7 @@ public class CourseMentor implements Parcelable {
     public CourseMentor() {
     }
 
+    @Ignore
     public CourseMentor(int courseId, int mentorId) {
         this.courseId = courseId;
         this.mentorId = mentorId;

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -28,12 +29,14 @@ public class Term implements Parcelable {
     public Term() {
     }
 
+    @Ignore
     public Term(String title, Date startDate, Date endDate) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
+    @Ignore
     public Term(int id, String title, Date startDate, Date endDate) {
         this.id = id;
         this.title = title;
