@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Android School Planner</string>
     <string name="title_activity_mentors">Mentors</string>
+    <string name="title_activity_term_list">TermListActivity</string>
 </resources>

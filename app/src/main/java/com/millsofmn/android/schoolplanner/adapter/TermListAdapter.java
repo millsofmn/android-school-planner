@@ -11,41 +11,43 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.millsofmn.android.schoolplanner.R;
-import com.millsofmn.android.schoolplanner.db.entity.Mentor;
+import com.millsofmn.android.schoolplanner.db.entity.Term;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MentorListAdapter extends RecyclerView.Adapter<MentorListAdapter.ViewHolder> {
-    private List<Mentor> data = new ArrayList<>();
+public class TermListAdapter extends RecyclerView.Adapter<TermListAdapter.ViewHolder> {
+    private static final DateFormat dateFormat = new SimpleDateFormat("MMM yyyy");
 
-    private OnMentorListener onMentorListener;
+    private List<Term> data = new ArrayList<>();
 
-    public MentorListAdapter(OnMentorListener onMentorListener) {
-        this.onMentorListener = onMentorListener;
+    private OnTermListener onTermListener;
+
+    public TermListAdapter(OnTermListener onTermListener) {
+        this.onTermListener = onTermListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mentor_details, parent, false);
+        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_term_details, parent, false);
 
-        return new ViewHolder(cardView, onMentorListener);
+        return new ViewHolder(cardView, onTermListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CardView cardView = holder.cardView;
 
-        TextView mentorName = cardView.findViewById(R.id.tv_mentor_name);
-        mentorName.setText(data.get(position).getName());
+        TextView termTitle = cardView.findViewById(R.id.tv_term_title);
+        termTitle.setText(data.get(position).getTitle());
 
-        TextView phoneNumbers = cardView.findViewById(R.id.tv_mentor_phone);
-        phoneNumbers.setText(data.get(position).getPhoneNumber());
-
-        TextView emailAddresses = cardView.findViewById(R.id.tv_mentor_emails);
-        emailAddresses.setText(data.get(position).getEmailAddress());
-
+        TextView termDates = cardView.findViewById(R.id.tv_term_dates);
+        if (data.get(position).getStartDate() != null) {
+            termDates.setText(dateFormat.format(data.get(position).getStartDate()) + " to " + dateFormat.format(data.get(position).getEndDate()));
+        }
     }
 
     @Override
@@ -53,7 +55,7 @@ public class MentorListAdapter extends RecyclerView.Adapter<MentorListAdapter.Vi
         return data.size();
     }
 
-    public void setData(List<Mentor> newData){
+    public void setData(List<Term> newData){
         if(data != null) {
             DataDiffCallBack dataDiffCallBack = new DataDiffCallBack(data, newData);
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(dataDiffCallBack);
@@ -66,7 +68,7 @@ public class MentorListAdapter extends RecyclerView.Adapter<MentorListAdapter.Vi
         }
     }
 
-    public Mentor getSelectedMentor(int position){
+    public Term getSelectedTerm(int position){
         if(!data.isEmpty()){
             if(data.size() > 0){
                 return data.get(position);
@@ -77,30 +79,30 @@ public class MentorListAdapter extends RecyclerView.Adapter<MentorListAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public CardView cardView;
-        public OnMentorListener onMentorListener;
+        public OnTermListener onTermListener;
 
-        public ViewHolder(@NonNull CardView cardView, OnMentorListener onMentorListener) {
+        public ViewHolder(@NonNull CardView cardView, OnTermListener onTermListener) {
             super(cardView);
             this.cardView = cardView;
-            this.onMentorListener = onMentorListener;
+            this.onTermListener = onTermListener;
 
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            onMentorListener.onMentorClick(getAdapterPosition());
+            onTermListener.onTermClick(getAdapterPosition());
         }
     }
 
-    public interface OnMentorListener {
-        void onMentorClick(int position);
+    public interface OnTermListener {
+        void onTermClick(int position);
     }
 
     class DataDiffCallBack extends DiffUtil.Callback {
-        private final List<Mentor> oldData, newData;
+        private final List<Term> oldData, newData;
 
-        public DataDiffCallBack(List<Mentor> oldData, List<Mentor> newData) {
+        public DataDiffCallBack(List<Term> oldData, List<Term> newData) {
             this.oldData = oldData;
             this.newData = newData;
         }

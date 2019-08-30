@@ -14,34 +14,34 @@ import java.util.List;
 
 public class MentorViewModel extends AndroidViewModel {
 
-    private final MentorRepository mentorRepository;
+    private final MentorRepository repository;
 
-    private LiveData<List<Mentor>> mentors;
+    private LiveData<List<Mentor>> allData;
 
     public MentorViewModel(@NonNull Application application) {
         super(application);
 
-        mentorRepository = new MentorRepository(application);
-        mentors = mentorRepository.findAll();
+        repository = new MentorRepository(application);
+        allData = repository.findAll();
     }
 
     public void insert(Mentor entity){
-        mentorRepository.insert(entity);
+        repository.insert(entity);
     }
 
     public void update(Mentor entity){
-        mentorRepository.update(entity);
+        repository.update(entity);
     }
 
     public void delete(Mentor entity){
-        mentorRepository.delete(entity);
+        repository.delete(entity);
     }
 
     public LiveData<List<Mentor>> getMentors(){
-        return mentors;
+        return allData;
     }
 
     public LiveData<Mentor> findById(int id){
-        return mentorRepository.findById(id);
+        return repository.findById(id);
     }
 }

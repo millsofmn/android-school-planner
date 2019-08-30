@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.term.TermListActivity"
+            android:label="@string/title_activity_term_list"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.mentor.MentorDetailsActivity"
             android:parentActivityName=".ui.main.MainActivity" />
         <activity

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.ui.mentor.MentorListActivity;
+import com.millsofmn.android.schoolplanner.ui.term.TermListActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,13 +31,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        btmNavMangeTerm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Going to Terms", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(getApplicationContext(), TermsListActivity.class);
-//                startActivity(intent);
-            }
+        btmNavMangeTerm.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), TermListActivity.class);
+            startActivity(intent);
         });
     }
 }
