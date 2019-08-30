@@ -1,8 +1,6 @@
 package com.millsofmn.android.schoolplanner;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
         btnNavMentors.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Going to Mentors", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), Mentors.class);
+                Intent intent = new Intent(getApplicationContext(), MentorActivity.class);
                 startActivity(intent);
             }
         });

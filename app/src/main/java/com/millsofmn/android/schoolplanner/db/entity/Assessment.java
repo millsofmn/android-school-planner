@@ -44,6 +44,7 @@ public class Assessment implements Parcelable {
     public Assessment() {
     }
 
+
     public Assessment(int courseId, @NonNull String title, @NonNull String performanceType, Date dueDate, boolean alertOnDueDate) {
         this.courseId = courseId;
         this.title = title;
