@@ -37,7 +37,7 @@ public class MentorViewModel extends AndroidViewModel {
         repository.delete(entity);
     }
 
-    public LiveData<List<Mentor>> getMentors(){
+    public LiveData<List<Mentor>> findAll(){
         return allData;
     }
 

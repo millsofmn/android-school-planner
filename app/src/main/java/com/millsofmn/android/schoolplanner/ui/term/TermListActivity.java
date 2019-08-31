@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.millsofmn.android.schoolplanner.R;
+import com.millsofmn.android.schoolplanner.adapter.CourseListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.TermListAdapter;
 import com.millsofmn.android.schoolplanner.db.entity.Term;
+import com.millsofmn.android.schoolplanner.ui.course.CourseListActivity;
 import com.millsofmn.android.schoolplanner.viewmodel.TermViewModel;
 
 import androidx.annotation.Nullable;
@@ -18,7 +19,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
 import android.widget.Toast;
 
 public class TermListActivity extends AppCompatActivity  implements TermListAdapter.OnTermListener {
@@ -40,6 +40,8 @@ public class TermListActivity extends AppCompatActivity  implements TermListAdap
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
+        setTitle("Terms");
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener((view) -> {
 //            Intent intent = new Intent(this, TermDetailsActivity.class);
@@ -51,7 +53,7 @@ public class TermListActivity extends AppCompatActivity  implements TermListAdap
         RecyclerView recyclerViewTerms = findViewById(R.id.rv_terms);
 
         termListAdapter = new TermListAdapter(this);
-        termViewModel.getTerms().observe(this, terms -> termListAdapter.setData(terms));
+        termViewModel.findAll().observe(this, terms -> termListAdapter.setData(terms));
 
         recyclerViewTerms.setAdapter(termListAdapter);
         recyclerViewTerms.setLayoutManager(new LinearLayoutManager(this));
@@ -60,9 +62,14 @@ public class TermListActivity extends AppCompatActivity  implements TermListAdap
 
     @Override
     public void onTermClick(int position) {
-//        Intent intent = new Intent(this, TermDetailsActivity.class);
-//        intent.putExtra(TermDetailsActivity.MENTOR_ID_EXTRA, termListAdapter.getSelectedTerm(position).getId());
-//        startActivityForResult(intent, EDIT_MENTOR_REQUEST);
+        Intent intent = new Intent(this, CourseListActivity.class);
+
+        Term term = termListAdapter.getSelectedTerm(position);
+
+        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, term.getId());
+        intent.putExtra(CourseListActivity.TERM_TITLE_EXTRA, term.getTitle());
+
+        startActivityForResult(intent, EDIT_MENTOR_REQUEST);
     }
 
     @Override

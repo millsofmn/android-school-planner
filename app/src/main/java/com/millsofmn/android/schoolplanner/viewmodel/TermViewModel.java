@@ -36,7 +36,7 @@ public class TermViewModel extends AndroidViewModel {
         repository.delete(entity);
     }
 
-    public LiveData<List<Term>> getTerms(){
+    public LiveData<List<Term>> findAll(){
         return allData;
     }
 }
