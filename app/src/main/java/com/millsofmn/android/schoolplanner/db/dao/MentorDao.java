@@ -34,4 +34,6 @@ public interface MentorDao {
     @Query("DELETE FROM mentor")
     void deleteAll();
 
+    @Query("SELECT mentor.* FROM mentor INNER JOIN course_mentor ON mentor.id = course_mentor.mentor_id WHERE course_mentor.course_id = :courseId")
+    LiveData<List<Mentor>> findByCourseId(int courseId);
 }

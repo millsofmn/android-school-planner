@@ -8,12 +8,14 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
 @Entity(
         tableName = "assessment",
+        indices = @Index("course_id"),
         foreignKeys = @ForeignKey(
                 entity = Course.class,
                 parentColumns = "id",

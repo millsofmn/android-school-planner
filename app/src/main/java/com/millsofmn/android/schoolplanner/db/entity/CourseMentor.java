@@ -13,7 +13,7 @@ import androidx.room.Index;
         tableName = "course_mentor",
         indices = {
                 @Index(value = "course_id"),
-                @Index(value = "mentor_id", unique = true)},
+                @Index(value = "mentor_id")},
         primaryKeys = {"course_id", "mentor_id"},
         foreignKeys = {
                 @ForeignKey(entity = Course.class,

@@ -102,7 +102,7 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
         rvCourseMentors.setAdapter(courseMentorListAdapter);
         rvCourseMentors.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mentorViewModel.findAll().observe(this, mentors -> courseMentorListAdapter.setData(mentors));
+        mentorViewModel.findByCourseId(courseId).observe(this, mentors -> courseMentorListAdapter.setData(mentors));
 
 
         rvCourseAssmt = view.findViewById(R.id.rv_course_assmt);

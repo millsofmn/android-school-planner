@@ -54,6 +54,7 @@ public class DatabaseSeed {
     public static List<Assessment> getAssessments(){
         List<Assessment> assessments = new ArrayList<>();
         assessments.add(new Assessment(1, 1, "Assessment", "OBJECTIVE", getDate(-5), false));
+        assessments.add(new Assessment(16, 1, "Report", "OBJECTIVE", getDate(-5), false));
         assessments.add(new Assessment(2, 2, "Assessment", "OBJECTIVE", getDate(-4), false));
         assessments.add(new Assessment(3, 3, "Assessment", "PERFORMANCE", getDate(-3), false));
         assessments.add(new Assessment(4, 4, "Assessment", "PERFORMANCE", getDate(-2), false));
@@ -96,6 +97,10 @@ public class DatabaseSeed {
         courseMentors.add(new CourseMentor(9, 5));
         courseMentors.add(new CourseMentor(10, 2));
         courseMentors.add(new CourseMentor(11, 3));
+        courseMentors.add(new CourseMentor(12, 1));
+        courseMentors.add(new CourseMentor(12, 2));
+        courseMentors.add(new CourseMentor(12, 3));
+        courseMentors.add(new CourseMentor(12, 4));
         courseMentors.add(new CourseMentor(12, 5));
 
         return courseMentors;

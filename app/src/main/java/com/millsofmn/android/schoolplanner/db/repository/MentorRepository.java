@@ -45,6 +45,10 @@ public class MentorRepository {
         return all;
     }
 
+    public LiveData<List<Mentor>> findByCourseId(int courseId){
+        return dao.findByCourseId(courseId);
+    }
+
     private static class insertAsyncTask extends AsyncTask<Mentor, Void, Void> {
         private MentorDao asyncTaskDao;
 
