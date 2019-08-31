@@ -136,8 +136,8 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_course, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
         switch (item.getItemId()) {
             case R.id.item_course_delete:
                 delete();
-                return true;
+                getActivity().finish();
             default:
                 return super.onOptionsItemSelected(item);
         }

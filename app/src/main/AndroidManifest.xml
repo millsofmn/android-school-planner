@@ -13,12 +13,14 @@
             android:name=".ui.course.CourseActivity"
             android:label="@string/title_activity_course_details"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.course.CourseListActivity"/>
+            android:parentActivityName=".ui.course.CourseListActivity"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.course.CourseListActivity"
             android:label="@string/title_activity_course_list"
             android:parentActivityName=".ui.term.TermListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.term.TermListActivity"
             android:label="@string/title_activity_term_list"
