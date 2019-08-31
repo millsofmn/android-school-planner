@@ -1,6 +1,8 @@
 package com.millsofmn.android.schoolplanner.ui.mentor;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -36,6 +38,13 @@ public class MentorDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mentor_details);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
+        setTitle("Mentor");
 
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
 
@@ -86,7 +95,6 @@ public class MentorDetailsActivity extends AppCompatActivity {
             String phone = etPhoneNumber.getText().toString();
             String email = etEmailAddress.getText().toString();
 
-
             Intent intent = new Intent();
 
             intent.putExtra(MENTOR_NAME_EXTRA, name);
@@ -104,7 +112,7 @@ public class MentorDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void delete(){
+    private void delete() {
         Toast.makeText(getApplicationContext(), "Mentor " + thisMentor.getName() + " Deleted", Toast.LENGTH_SHORT).show();
         mentorViewModel.delete(thisMentor);
 

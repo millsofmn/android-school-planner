@@ -37,7 +37,7 @@ public class TermRepository {
         new updateAsyncTask(dao).execute(entity);
     }
 
-    public Term findById(int id){
+    public LiveData<Term> findById(int id){
         return dao.findById(id);
     }
 

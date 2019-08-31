@@ -39,4 +39,8 @@ public class TermViewModel extends AndroidViewModel {
     public LiveData<List<Term>> findAll(){
         return allData;
     }
+
+    public LiveData<Term> findById(int id){
+        return repository.findById(id);
+    }
 }

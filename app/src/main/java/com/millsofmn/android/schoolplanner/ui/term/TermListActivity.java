@@ -69,7 +69,7 @@ public class TermListActivity extends AppCompatActivity  implements TermListAdap
         intent.putExtra(CourseListActivity.TERM_ID_EXTRA, term.getId());
         intent.putExtra(CourseListActivity.TERM_TITLE_EXTRA, term.getTitle());
 
-        startActivityForResult(intent, EDIT_MENTOR_REQUEST);
+        startActivity(intent);
     }
 
     @Override

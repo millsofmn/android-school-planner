@@ -10,10 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.course.CourseActivity"
+            android:label="@string/title_activity_course_details"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ui.course.CourseListActivity"/>
+        <activity
             android:name=".ui.course.CourseListActivity"
             android:label="@string/title_activity_course_list"
             android:parentActivityName=".ui.term.TermListActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.term.TermListActivity"
             android:label="@string/title_activity_term_list"
@@ -21,7 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.mentor.MentorDetailsActivity"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:parentActivityName=".ui.mentor.MentorListActivity" />
         <activity
             android:name=".ui.mentor.MentorListActivity"
             android:label="@string/title_activity_mentors"

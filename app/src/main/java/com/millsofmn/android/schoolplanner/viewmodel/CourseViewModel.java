@@ -44,4 +44,8 @@ public class CourseViewModel extends AndroidViewModel {
     public LiveData<List<Course>> getCoursesByTermId(int termId){
         return repository.findByTermId(termId);
     }
+
+    public LiveData<Course> findById(int courseId) {
+        return repository.findById(courseId);
+    }
 }

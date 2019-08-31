@@ -49,6 +49,10 @@ public class CourseRepository {
         return dao.findByTermId(termId);
     }
 
+    public LiveData<Course> findById(int courseId) {
+        return dao.findById(courseId);
+    }
+
     private static class insertAsyncTask extends AsyncTask<Course, Void, Void> {
         private CourseDao asyncTaskDao;
 

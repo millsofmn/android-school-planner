@@ -3,4 +3,8 @@
     <string name="title_activity_mentors">Mentors</string>
     <string name="title_activity_term_list">TermListActivity</string>
     <string name="title_activity_course_list">CourseListActivity</string>
+    <string name="title_activity_course_details">CourseDetailsActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
