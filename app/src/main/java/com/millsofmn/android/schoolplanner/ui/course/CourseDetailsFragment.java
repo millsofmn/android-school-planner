@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,11 +72,6 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
-
-    // required by activity to use back button
-    public boolean onOptionsItemSelected(MenuItem item){
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -138,7 +135,33 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_course, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_course_delete:
+                delete();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onClick(int position) {
 
+    }
+
+    private void delete(){
+        if(thisCourse != null){
+            Log.i(TAG, "Deleting");
+            courseViewModel.delete(thisCourse);
+        } else {
+            Log.i(TAG, "Note Deleting");
+        }
     }
 }

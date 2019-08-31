@@ -49,24 +49,30 @@ public class CourseActivity extends AppCompatActivity {
         setupViewPager(viewPager);
     }
 
-    public void setActionBarTitle(String title){
+    public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
 
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "Menu Called");
+//        switch (item.getItemId()) {
+//            case R.id.item_course_delete:
+//                Log.i(TAG, "Menu Called delete");
+//            default:
+//        }
         Intent intent = new Intent(getApplicationContext(), CourseListActivity.class);
         intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
         startActivityForResult(intent, 0);
-
         return true;
+
     }
 
-    private void setupViewPager(ViewPager viewPager){
+    private void setupViewPager(ViewPager viewPager) {
         adapter.addFragment(CourseDetailsFragment.newInstance(courseId, termId), "Course Details");
         viewPager.setAdapter(adapter);
     }
 
-    public void setViewPager(int fragmentNumber){
+    public void setViewPager(int fragmentNumber) {
         viewPager.setCurrentItem(fragmentNumber);
     }
 }
