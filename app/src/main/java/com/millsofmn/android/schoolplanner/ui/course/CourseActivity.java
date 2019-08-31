@@ -58,7 +58,7 @@ public class CourseActivity extends AppCompatActivity {
         intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
         startActivityForResult(intent, 0);
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     private void setupViewPager(ViewPager viewPager){

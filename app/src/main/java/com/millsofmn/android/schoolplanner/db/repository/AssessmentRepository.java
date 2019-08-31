@@ -36,7 +36,7 @@ public class AssessmentRepository {
         new updateAsyncTask(dao).execute(entity);
     }
 
-    public Assessment findById(int id){
+    public LiveData<Assessment> findById(int id){
         return dao.findById(id);
     }
 

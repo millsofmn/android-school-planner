@@ -32,5 +32,5 @@ public interface AssessmentDao {
     LiveData<List<Assessment>> getAll();
 
     @Query("SELECT * FROM assessment WHERE id = :id")
-    Assessment findById(int id);
+    LiveData<Assessment> findById(int id);
 }

@@ -1,7 +1,6 @@
 package com.millsofmn.android.schoolplanner.ui.course;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -20,9 +19,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.millsofmn.android.schoolplanner.R;
+import com.millsofmn.android.schoolplanner.adapter.CourseAssmtListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.CourseMentorListAdapter;
 import com.millsofmn.android.schoolplanner.db.entity.Course;
-import com.millsofmn.android.schoolplanner.db.entity.Mentor;
+import com.millsofmn.android.schoolplanner.viewmodel.AssessmentViewModel;
 import com.millsofmn.android.schoolplanner.viewmodel.CourseViewModel;
 import com.millsofmn.android.schoolplanner.viewmodel.MentorViewModel;
 
@@ -34,6 +34,7 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
 
     private static final SimpleDateFormat fmtDate = new SimpleDateFormat("MMM d, yyyy hh:mm a", Locale.getDefault());
 
+    private AssessmentViewModel assessmentViewModel;
     private CourseViewModel courseViewModel;
     private MentorViewModel mentorViewModel;
 
@@ -43,7 +44,7 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
     private int termId;
 
     private TextView tvCourseTitle;
-    private TextView tvCoruseStatus;
+    private TextView tvCourseStatus;
     private TextView tvCourseStartDate;
     private TextView tvCourseEndDate;
     private RecyclerView rvCourseMentors;
@@ -73,12 +74,6 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
 
     // required by activity to use back button
     public boolean onOptionsItemSelected(MenuItem item){
-//        Log.i(TAG, "tit " + item.getItemId() + " " + termId);
-//
-//        Intent intent = new Intent(getContext(), CourseListActivity.class);
-//        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
-//        startActivityForResult(intent, 0);
-//        return true;
         return super.onOptionsItemSelected(item);
     }
 
@@ -92,11 +87,12 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
         termId = getArguments().getInt(CourseListActivity.TERM_ID_EXTRA, -1);
         Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
 
+        assessmentViewModel = ViewModelProviders.of(this).get(AssessmentViewModel.class);
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
 
         tvCourseTitle = view.findViewById(R.id.tv_course_title);
-        tvCoruseStatus = view.findViewById(R.id.tv_course_status);
+        tvCourseStatus = view.findViewById(R.id.tv_course_status);
         tvCourseStartDate = view.findViewById(R.id.tv_course_start_date);
         tvCourseEndDate = view.findViewById(R.id.tv_course_end_date);
         tvCourseNotes = view.findViewById(R.id.tv_course_notes);
@@ -110,7 +106,11 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
 
 
         rvCourseAssmt = view.findViewById(R.id.rv_course_assmt);
+        CourseAssmtListAdapter courseAssmtListAdapter = new CourseAssmtListAdapter(this);
+        rvCourseAssmt.setAdapter(courseAssmtListAdapter);
+        rvCourseAssmt.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        assessmentViewModel.findByCourseId(courseId).observe(this, assessments -> courseAssmtListAdapter.setData(assessments));
 
         Observer<Course> courseObserver = course -> {
             thisCourse = course;
@@ -131,7 +131,7 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
 
     private void setCourseDetails(Course course){
         tvCourseTitle.setText(course.getTitle());
-        tvCoruseStatus.setText(course.getStatus());
+        tvCourseStatus.setText(course.getStatus());
         tvCourseStartDate.setText(fmtDate.format(course.getStartDate()));
         tvCourseEndDate.setText(fmtDate.format(course.getEndDate()));
         tvCourseNotes.setText(course.getNotes());
