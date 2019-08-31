@@ -46,7 +46,7 @@ public class MentorListActivity extends AppCompatActivity implements MentorListA
 
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
 
-        RecyclerView recyclerViewMentors = findViewById(R.id.rv_mentors);
+        RecyclerView recyclerViewMentors = findViewById(R.id.rv_course_mentors);
 
         mentorListAdapter = new MentorListAdapter(this);
         mentorViewModel.findAll().observe(this, mentors -> mentorListAdapter.setData(mentors));

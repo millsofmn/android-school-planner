@@ -10,7 +10,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "mentor")
-public class Mentor implements Parcelable {
+public class Mentor implements Parcelable, MyEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int id;

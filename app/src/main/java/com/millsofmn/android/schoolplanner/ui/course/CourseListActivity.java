@@ -31,6 +31,8 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
     private CourseViewModel courseViewModel;
     private TermViewModel termViewModel;
 
+    private int termId;
+
     private Term thisTerm;
 
     @Override
@@ -61,7 +63,7 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
 
         courseListAdapter = new CourseListAdapter(this);
 
-        int termId = getIntent().getIntExtra(TERM_ID_EXTRA, -1);
+        termId = getIntent().getIntExtra(TERM_ID_EXTRA, -1);
 
         termViewModel.findById(termId).observe(this, term -> {
             if(term != null) {
@@ -80,10 +82,10 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
     public void onCourseClick(int position) {
         Intent intent = new Intent(this, CourseActivity.class);
         Course selectedCourse = courseListAdapter.getSelectedCourse(position);
-        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, thisTerm.getId());
+        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
         intent.putExtra(CourseActivity.COURSE_ID_EXTRA, selectedCourse.getId());
 
         startActivityForResult(intent, EDIT_COURSE_REQUEST);
-        startActivity(intent);
+//        startActivity(intent);
     }
 }

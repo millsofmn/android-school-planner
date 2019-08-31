@@ -2,6 +2,7 @@ package com.millsofmn.android.schoolplanner.ui.course;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.millsofmn.android.schoolplanner.R;
@@ -13,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 public class CourseActivity extends AppCompatActivity {
-
+    public static final String TAG = "CourseActivity --";
     public static final String COURSE_ID_EXTRA = "course_id";
     public static final String COURSE_TITLE_EXTRA = "course_title";
 
@@ -36,6 +37,8 @@ public class CourseActivity extends AppCompatActivity {
 
         termId = getIntent().getIntExtra(CourseListActivity.TERM_ID_EXTRA, -1);
         courseId = getIntent().getIntExtra(COURSE_ID_EXTRA, -1);
+        Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
+
 
         setTitle(getIntent().getStringExtra(COURSE_TITLE_EXTRA));
 
@@ -54,11 +57,12 @@ public class CourseActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), CourseListActivity.class);
         intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
         startActivityForResult(intent, 0);
-        return true;
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupViewPager(ViewPager viewPager){
-        adapter.addFragment(CourseDetailsFragment.newInstance(courseId), "Course Details");
+        adapter.addFragment(CourseDetailsFragment.newInstance(courseId, termId), "Course Details");
         viewPager.setAdapter(adapter);
     }
 
