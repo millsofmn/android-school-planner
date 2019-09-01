@@ -80,7 +80,8 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
 
     @Override
     public void onCourseClick(int position) {
-        Intent intent = new Intent(this, CourseActivity.class);
+//        Intent intent = new Intent(this, CourseActivity.class);
+        Intent intent = new Intent(this, CourseDetailsActivity.class);
         Course selectedCourse = courseListAdapter.getSelectedCourse(position);
         intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
         intent.putExtra(CourseActivity.COURSE_ID_EXTRA, selectedCourse.getId());

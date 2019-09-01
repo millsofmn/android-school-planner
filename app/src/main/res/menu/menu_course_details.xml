@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.millsofmn.android.schoolplanner.ui.course.CourseDetailsActivity">
+
+
+    <item
+        android:id="@+id/item_course_save"
+        android:icon="@drawable/ic_save"
+        android:title="Save"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/item_course_edit"
+        android:icon="@drawable/ic_edit"
+        android:title="Edit"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/item_course_delete"
+        android:title="Delete"
+        app:showAsAction="never"/>
+</menu>

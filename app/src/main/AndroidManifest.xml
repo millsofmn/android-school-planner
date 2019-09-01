@@ -10,17 +10,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.course.CourseActivity"
+            android:name=".ui.course.CourseDetailsActivity"
             android:label="@string/title_activity_course_details"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.course.CourseListActivity"
-            android:launchMode="singleTop"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name=".CourseEditActivity"-->
+            <!--android:label="@string/title_activity_course_edit"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
+        <!--<activity-->
+            <!--android:name=".ui.course.CourseActivity"-->
+            <!--android:label="@string/title_activity_course_details"-->
+            <!--android:launchMode="singleTop"-->
+            <!--android:parentActivityName=".ui.course.CourseListActivity"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
         <activity
             android:name=".ui.course.CourseListActivity"
             android:label="@string/title_activity_course_list"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.term.TermListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.term.TermListActivity"
             android:label="@string/title_activity_term_list"

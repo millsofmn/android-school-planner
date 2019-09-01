@@ -55,7 +55,7 @@ public class CourseActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         adapter.addFragment(CourseDetailsFragment.newInstance(courseId, termId), "Course Details");
-        adapter.addFragment(CourseEditFragment.newInstance(courseId, termId), "Edit Course Details");
+//        adapter.addFragment(CourseEditFragment.newInstance(courseId, termId), "Edit Course Details");
 
         viewPager.setAdapter(adapter);
     }

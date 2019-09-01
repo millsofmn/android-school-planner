@@ -1,6 +1,7 @@
 package com.millsofmn.android.schoolplanner.ui.course;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.millsofmn.android.schoolplanner.CourseEditActivity;
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.adapter.CourseAssmtListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.CourseMentorListAdapter;
@@ -147,11 +149,20 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
                 getActivity().finish();
                 return true;
             case R.id.item_course_edit:
-                ((CourseActivity)getActivity()).setViewPager(1);
+                editCourse();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void editCourse(){
+        Intent intent = new Intent(getActivity(), CourseEditActivity.class);
+
+        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
+        intent.putExtra(CourseActivity.COURSE_ID_EXTRA, courseId);
+
+        startActivityForResult(intent, CourseListActivity.EDIT_COURSE_REQUEST);
     }
 
     @Override
