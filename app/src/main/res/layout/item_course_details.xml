@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_course_title"
+                android:id="@+id/et_course_title"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
@@ -32,7 +32,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tv_course_status"
+                android:id="@+id/sp_course_status"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"

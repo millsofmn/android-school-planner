@@ -42,7 +42,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CardView cardView = holder.cardView;
 
-        TextView courseTitle = cardView.findViewById(R.id.tv_course_title);
+        TextView courseTitle = cardView.findViewById(R.id.et_course_title);
         courseTitle.setText(data.get(position).getTitle());
 
         TextView courseDates = cardView.findViewById(R.id.tv_course_dates);
@@ -50,7 +50,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Vi
             courseDates.setText(dateFormat.format(data.get(position).getStartDate()) + " to " + dateFormat.format(data.get(position).getEndDate()));
         }
 
-        TextView courseStatus = cardView.findViewById(R.id.tv_course_status);
+        TextView courseStatus = cardView.findViewById(R.id.sp_course_status);
         courseStatus.setText(data.get(position).getStatus());
 
     }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,10 +87,10 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
 
-        tvCourseTitle = view.findViewById(R.id.tv_course_title);
-        tvCourseStatus = view.findViewById(R.id.tv_course_status);
-        tvCourseStartDate = view.findViewById(R.id.tv_course_start_date);
-        tvCourseEndDate = view.findViewById(R.id.tv_course_end_date);
+        tvCourseTitle = view.findViewById(R.id.et_course_title);
+        tvCourseStatus = view.findViewById(R.id.sp_course_status);
+        tvCourseStartDate = view.findViewById(R.id.btn_course_start_date);
+        tvCourseEndDate = view.findViewById(R.id.btn_course_end_date);
         tvCourseNotes = view.findViewById(R.id.tv_course_notes);
 
         rvCourseMentors = view.findViewById(R.id.rv_course_mentors);
@@ -146,6 +145,10 @@ public class CourseDetailsFragment extends Fragment implements CourseMentorListA
             case R.id.item_course_delete:
                 delete();
                 getActivity().finish();
+                return true;
+            case R.id.item_course_edit:
+                ((CourseActivity)getActivity()).setViewPager(1);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

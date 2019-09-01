@@ -46,14 +46,14 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
 
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
@@ -68,7 +68,7 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
         termViewModel.findById(termId).observe(this, term -> {
             if(term != null) {
                 thisTerm = term;
-                setTitle(term.getTitle());
+                setTitle(term.getTitle() + " Courses");
             }
         });
 

@@ -53,22 +53,10 @@ public class CourseActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
     }
 
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        Log.i(TAG, "Menu Called");
-////        switch (item.getItemId()) {
-////            case R.id.item_course_delete:
-////                Log.i(TAG, "Menu Called delete");
-////            default:
-////        }
-//        Intent intent = new Intent(getApplicationContext(), CourseListActivity.class);
-//        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
-//        startActivityForResult(intent, 0);
-//        return true;
-//
-//    }
-
     private void setupViewPager(ViewPager viewPager) {
         adapter.addFragment(CourseDetailsFragment.newInstance(courseId, termId), "Course Details");
+        adapter.addFragment(CourseEditFragment.newInstance(courseId, termId), "Edit Course Details");
+
         viewPager.setAdapter(adapter);
     }
 
