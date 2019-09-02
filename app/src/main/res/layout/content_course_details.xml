@@ -81,10 +81,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:text="12:00 PM"
             app:layout_constraintStart_toEndOf="@+id/btn_course_start_date"
-            app:layout_constraintTop_toBottomOf="@+id/tv_course_lbl_dates" />
+            app:layout_constraintTop_toTopOf="@+id/btn_course_start_date" />
+
+        <CheckBox
+            android:id="@+id/cb_course_alert_on_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:text="Alert On Start"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_course_start_date" />
 
         <TextView
             android:id="@+id/btn_course_end_date"
@@ -94,7 +103,7 @@
             android:layout_marginTop="8dp"
             android:text="Monday, Aug 26, 2019"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_course_start_date" />
+            app:layout_constraintTop_toBottomOf="@+id/cb_course_alert_on_start" />
 
 
         <TextView
@@ -102,21 +111,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:text="1:00 AM"
             app:layout_constraintStart_toEndOf="@+id/btn_course_end_date"
-            app:layout_constraintTop_toBottomOf="@+id/btn_course_start_date" />
+            app:layout_constraintTop_toTopOf="@+id/btn_course_end_date" />
+
+        <CheckBox
+            android:id="@+id/cb_course_alert_on_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:text="Alert On End"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_course_end_date" />
 
         <TextView
             android:id="@+id/tv_course_lbl_mentors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Mentors:"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_course_end_date" />
+            app:layout_constraintTop_toBottomOf="@+id/cb_course_alert_on_end" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_course_mentors"
@@ -163,15 +181,27 @@
 
         <TextView
             android:id="@+id/tv_course_notes"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
+            android:gravity="top"
+            android:inputType="textMultiLine"
             android:text="Notes and notes about things going on in here"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_course_lbl_notes" />
+
+        <EditText
+            android:id="@+id/et_course_notes"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:hint="Course Notes"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_course_notes" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

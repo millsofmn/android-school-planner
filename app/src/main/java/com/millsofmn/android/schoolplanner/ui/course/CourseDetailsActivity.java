@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,9 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +46,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class CourseDetailsActivity extends AppCompatActivity implements CourseMentorListAdapter.OnListener {
     private static final String TAG = "CourseDetailsActivity+++";
@@ -76,11 +73,14 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private TextView tvCourseStatus;
     private TextView tvCourseStartDate;
     private TextView tvCourseStartTime;
+    private CheckBox cbCourseAlertOnStart;
     private TextView tvCourseEndDate;
     private TextView tvCourseEndTime;
+    private CheckBox cbCourseAlertOnEnd;
     private RecyclerView rvCourseMentors;
     private RecyclerView rvCourseAssmt;
     private TextView tvCourseNotes;
+    private EditText etCourseNotes;
 
     private TextView lastClicked;
     private List<Mentor> mentorsList = new ArrayList<>();
@@ -114,20 +114,23 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
         tvCourseTitle = findViewById(R.id.tv_course_title);
         etCourseTitle = findViewById(R.id.et_course_title);
+
         tvCourseStatus = findViewById(R.id.sp_course_status);
         tvCourseStartDate = findViewById(R.id.btn_course_start_date);
         tvCourseStartTime = findViewById(R.id.tv_course_start_time);
+        cbCourseAlertOnStart = findViewById(R.id.cb_course_alert_on_start);
         tvCourseEndDate = findViewById(R.id.btn_course_end_date);
         tvCourseEndTime = findViewById(R.id.tv_course_end_time);
+        cbCourseAlertOnEnd = findViewById(R.id.cb_course_alert_on_end);
         tvCourseNotes = findViewById(R.id.tv_course_notes);
-
+        etCourseNotes = findViewById(R.id.et_course_notes);
         rvCourseMentors = findViewById(R.id.rv_course_mentors);
         rvCourseAssmt = findViewById(R.id.rv_course_assmt);
 
         if (courseId > -1) {
             initForm();
-            setEditable(false);
         }
+        setEditable(true);
     }
 
     private void initForm() {
@@ -166,16 +169,24 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     private void setCourseDetails(Course course) {
         tvCourseTitle.setText(course.getTitle());
+        tvCourseTitle.setVisibility(View.VISIBLE);
         etCourseTitle.setText(course.getTitle());
+        etCourseTitle.setVisibility(View.GONE);
 
         tvCourseStatus.setText(course.getStatus());
 
         tvCourseStartDate.setText(fmtDate.format(course.getStartDate()));
         tvCourseStartTime.setText(fmtTime.format(course.getStartDate()));
+        cbCourseAlertOnStart.setChecked(course.isAlertOnStartDate());
+
         tvCourseEndDate.setText(fmtDate.format(course.getEndDate()));
         tvCourseEndTime.setText(fmtTime.format(course.getEndDate()));
+        cbCourseAlertOnEnd.setChecked(course.isAlertOnEndDate());
 
         tvCourseNotes.setText(course.getNotes());
+        tvCourseNotes.setVisibility(View.VISIBLE);
+        etCourseNotes.setText(course.getNotes());
+        etCourseNotes.setVisibility(View.GONE);
 
     }
 
@@ -195,29 +206,23 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
             etEditable = View.GONE;
         }
 
-        tvCourseTitle.setVisibility(tvEditable);
-        etCourseTitle.setVisibility(etEditable);
+        tvCourseTitle.setOnClickListener(view -> {
+            tvCourseTitle.setVisibility(View.GONE);
+            etCourseTitle.setVisibility(View.VISIBLE);
+        });
 
-        if (courseEditable) {
-            tvCourseStatus.setOnClickListener(v -> showCourseStatusDialog());
+        tvCourseStatus.setOnClickListener(v -> showCourseStatusDialog());
 
-            tvCourseStartDate.setOnClickListener(v -> showDatePickerDialog(tvCourseStartDate));
-            tvCourseStartTime.setOnClickListener(v -> showTimePickerDialog(tvCourseStartTime));
+        tvCourseStartDate.setOnClickListener(v -> showDatePickerDialog(tvCourseStartDate));
+        tvCourseStartTime.setOnClickListener(v -> showTimePickerDialog(tvCourseStartTime));
 
-            tvCourseEndDate.setOnClickListener(v -> showDatePickerDialog(tvCourseEndDate));
-            tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
+        tvCourseEndDate.setOnClickListener(v -> showDatePickerDialog(tvCourseEndDate));
+        tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
 
-
-        } else {
-            tvCourseStatus.setOnClickListener(null);
-
-            tvCourseStartDate.setOnClickListener(null);
-            tvCourseStartTime.setOnClickListener(null);
-
-            tvCourseEndDate.setOnClickListener(null);
-            tvCourseEndTime.setOnClickListener(null);
-
-        }
+        tvCourseNotes.setOnClickListener(view -> {
+            tvCourseNotes.setVisibility(View.GONE);
+            etCourseNotes.setVisibility(View.VISIBLE);
+        });
     }
 
     @Override
@@ -263,17 +268,15 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                 String startString = tvCourseStartDate.getText().toString() + " " + tvCourseStartTime.getText().toString();
                 LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
                 thisCourse.setStartDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+                thisCourse.setAlertOnStartDate(cbCourseAlertOnStart.isChecked());
 
                 String endString = tvCourseEndDate.getText().toString() + " " + tvCourseEndTime.getText().toString();
                 LocalDateTime endDateTime = LocalDateTime.parse(endString, fmtDateTime);
                 thisCourse.setEndDate(Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+                thisCourse.setAlertOnEndDate(cbCourseAlertOnEnd.isChecked());
 
+                thisCourse.setNotes(etCourseNotes.getText().toString());
 
-//                Date startDate = fmtDate.parse(buttonStartDate.getText().toString());
-//                Date endDate = fmtDate.parse(buttonEndDate.getText().toString());
-//                String status = courseStatus.getSelectedItem().toString();
-//                String notes = editTextNotes.getText().toString();
-//
                 courseViewModel.update(thisCourse);
 
             } catch (Exception e) {
@@ -284,12 +287,12 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         setEditable(false);
     }
 
-    private void saveMentors(){
-        for(CourseMentor cm : courseMentors){
+    private void saveMentors() {
+        for (CourseMentor cm : courseMentors) {
             courseMentorViewModel.delete(cm);
         }
 
-        for(Mentor mentor : selectedMentors){
+        for (Mentor mentor : selectedMentors) {
             CourseMentor courseMentor = new CourseMentor(courseId, mentor.getId());
             courseMentorViewModel.insert(courseMentor);
         }
@@ -309,7 +312,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     @Override
     public void onClick(int position) {
-        if(courseEditable){
+        if (courseEditable) {
             showMentorSelectionDialog();
         }
     }
@@ -319,6 +322,9 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         builder.setMessage("Delete Course?");
         builder.setPositiveButton("Delete", (dialogInterface, i) -> {
             if (thisCourse != null) {
+                for (CourseMentor cm : courseMentors) {
+                    courseMentorViewModel.delete(cm);
+                }
                 courseViewModel.delete(thisCourse);
             }
             finish();
@@ -338,26 +344,26 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle("Set Course Status")
-                .setSingleChoiceItems(courseStatuses, idx,(dialogInterface, i) -> {
+                .setSingleChoiceItems(courseStatuses, idx, (dialogInterface, i) -> {
                     tvCourseStatus.setText(courseStatuses[i]);
                     dialogInterface.dismiss();
                 });
         builder.show();
     }
 
-    private void showMentorSelectionDialog(){
+    private void showMentorSelectionDialog() {
         List<Integer> selectedMentorsIndexList = new ArrayList<>();
 
         String[] them = new String[mentorsList.size()];
         boolean[] themChecked = new boolean[mentorsList.size()];
 
-        for(int i = 0; i < mentorsList.size(); i++){
+        for (int i = 0; i < mentorsList.size(); i++) {
             Mentor mentor = mentorsList.get(i);
             them[i] = mentor.getName();
 
             Mentor checked = selectedMentors.stream().filter(mentor1 -> mentor.getId() == mentor1.getId()).findAny().orElse(null);
 
-            if(checked != null){
+            if (checked != null) {
                 themChecked[i] = true;
                 selectedMentorsIndexList.add(i);
             } else {
@@ -372,9 +378,9 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int which, boolean isChecked) {
-                                if(isChecked){
+                                if (isChecked) {
                                     selectedMentorsIndexList.add(which);
-                                } else if(selectedMentorsIndexList.contains(which)){
+                                } else if (selectedMentorsIndexList.contains(which)) {
                                     selectedMentorsIndexList.remove(Integer.valueOf(which));
                                 }
                             }
@@ -384,7 +390,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                     public void onClick(DialogInterface dialogInterface, int i) {
                         selectedMentors.clear();
 
-                        for(int x : selectedMentorsIndexList){
+                        for (int x : selectedMentorsIndexList) {
                             Mentor mentor = mentorsList.get(x);
                             selectedMentors.add(mentor);
                             Log.i(TAG, "Selected " + mentor.getName());
@@ -415,6 +421,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     private final DatePickerDialog.OnDateSetListener setDate = new DatePickerDialog.OnDateSetListener() {
         final Calendar calendar = Calendar.getInstance();
+
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             calendar.set(Calendar.YEAR, year);
@@ -425,7 +432,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         }
     };
 
-    private void showTimePickerDialog(TextView lastClicked){
+    private void showTimePickerDialog(TextView lastClicked) {
         this.lastClicked = lastClicked;
         final Calendar calendar = Calendar.getInstance();
         new TimePickerDialog(
@@ -438,6 +445,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     private final TimePickerDialog.OnTimeSetListener setTime = new TimePickerDialog.OnTimeSetListener() {
         final Calendar calendar = Calendar.getInstance();
+
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
