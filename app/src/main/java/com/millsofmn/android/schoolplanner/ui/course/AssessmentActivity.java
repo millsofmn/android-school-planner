@@ -1,4 +1,4 @@
-package com.millsofmn.android.schoolplanner;
+package com.millsofmn.android.schoolplanner.ui.course;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -24,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 import com.millsofmn.android.schoolplanner.viewmodel.AssessmentViewModel;
 
@@ -51,8 +51,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
     private AssessmentViewModel assessmentViewModel;
 
-    private ConstraintLayout clAssmt;
-    private ScrollView svAssmtView;
+    private ConstraintLayout constraintLayout;
 
     private TextView tvAssmtTitle;
     private EditText etAssmtTitle;
@@ -70,7 +69,7 @@ public class AssessmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_assessment);
+        setContentView(R.layout.activity_assessment_details);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,8 +78,7 @@ public class AssessmentActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         // ui
-        svAssmtView = findViewById(R.id.sv_assmt_view);
-        clAssmt = findViewById(R.id.cl_assmt);
+        constraintLayout = findViewById(R.id.cl_assmt_layout);
         tvAssmtTitle = findViewById(R.id.tv_assmt_title);
         etAssmtTitle = findViewById(R.id.et_assmt_title);
         tvAssmtType = findViewById(R.id.tv_assmt_type);
@@ -98,12 +96,7 @@ public class AssessmentActivity extends AppCompatActivity {
         };
 
         // listeners
-        svAssmtView.setOnClickListener(v -> {
-            etAssmtTitle.setVisibility(View.GONE);
-            tvAssmtTitle.setVisibility(View.VISIBLE);
-            save();
-        });
-        clAssmt.setOnClickListener(v -> {
+        constraintLayout.setOnClickListener(view -> {
             etAssmtTitle.setVisibility(View.GONE);
             tvAssmtTitle.setVisibility(View.VISIBLE);
             save();
@@ -161,7 +154,12 @@ public class AssessmentActivity extends AppCompatActivity {
                 if (save()) finish();
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                if (save()) {
+                    return super.onOptionsItemSelected(item);
+                } else {
+                    showConfirmLeaveDialog();
+                    return true;
+                }
         }
     }
 
@@ -199,6 +197,7 @@ public class AssessmentActivity extends AppCompatActivity {
                 assessmentViewModel.insert(assessment);
             }
             return true;
+
         }
 
         return false;
@@ -206,7 +205,6 @@ public class AssessmentActivity extends AppCompatActivity {
 
     private boolean isValid() {
         boolean valid = true;
-
 
         if (TextUtils.isEmpty(etAssmtTitle.getText())) {
             etAssmtTitle.setError("Assessment title is required.");
@@ -232,6 +230,18 @@ public class AssessmentActivity extends AppCompatActivity {
             if (thisAssessment != null) {
                 assessmentViewModel.delete(thisAssessment);
             }
+            finish();
+        });
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
+            // click
+        });
+        builder.show();
+    }
+
+    private void showConfirmLeaveDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Assessment is invalid are you sure you want to leave?");
+        builder.setPositiveButton("Yes", (dialogInterface, i) -> {
             finish();
         });
         builder.setNegativeButton("Cancel", (dialogInterface, i) -> {

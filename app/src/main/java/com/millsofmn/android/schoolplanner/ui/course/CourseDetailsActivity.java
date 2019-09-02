@@ -28,7 +28,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.millsofmn.android.schoolplanner.AssessmentActivity;
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.adapter.CourseAssmtListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.CourseMentorListAdapter;
