@@ -21,7 +21,7 @@ import java.util.Date;
                 parentColumns = "id",
                 childColumns = "course_id",
                 onDelete = ForeignKey.CASCADE))
-public class Assessment implements Parcelable, MyEntity {
+public class Assessment implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;

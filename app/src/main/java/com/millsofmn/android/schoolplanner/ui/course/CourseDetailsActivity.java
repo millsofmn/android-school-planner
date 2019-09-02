@@ -3,6 +3,7 @@ package com.millsofmn.android.schoolplanner.ui.course;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,9 +27,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.millsofmn.android.schoolplanner.AssessmentActivity;
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.adapter.CourseAssmtListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.CourseMentorListAdapter;
+import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 import com.millsofmn.android.schoolplanner.db.entity.Course;
 import com.millsofmn.android.schoolplanner.db.entity.CourseMentor;
 import com.millsofmn.android.schoolplanner.db.entity.Mentor;
@@ -48,7 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
-public class CourseDetailsActivity extends AppCompatActivity implements CourseMentorListAdapter.OnListener {
+public class CourseDetailsActivity extends AppCompatActivity implements CourseMentorListAdapter.OnListener, CourseAssmtListAdapter.OnListener {
     private static final String TAG = "CourseDetailsActivity+++";
 
     private static final String DATE_FORMAT = "EEEE, MMM d, yyyy";
@@ -173,7 +176,9 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         courseMentorObserver = cms -> courseMentors.addAll(cms);
         courseObserver = course -> {
             thisCourse = course;
-            setCourseDetails(course);
+            if(course != null){
+                setCourseDetails(course);
+            }
         };
 
         // Preload
@@ -277,6 +282,18 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         inflater.inflate(R.menu.menu_course_details, menu);
         return true;
     }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        if (courseEditable) {
+//            menu.findItem(R.id.item_course_save).setVisible(true);
+//            menu.findItem(R.id.item_course_edit).setVisible(false);
+//        } else {
+//            menu.findItem(R.id.item_course_save).setVisible(false);
+//            menu.findItem(R.id.item_course_edit).setVisible(true);
+//        }
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -386,8 +403,18 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     // MENTOR DIALOG
 
     @Override
-    public void onClick(int position) {
+    public void onCourseMentorClick(int position) {
         showMentorSelectionDialog();
+    }
+
+    @Override
+    public void onCourseAssessmentClick(int position) {
+        Assessment selectedAssessment = courseAssmtListAdapter.getSelectedItem(position);
+
+        Intent intent = new Intent(this, AssessmentActivity.class);
+        intent.putExtra(AssessmentActivity.COURSE_ID_EXTRA, courseId);
+        intent.putExtra(AssessmentActivity.ASSMT_ID_SELECTED, selectedAssessment.getId());
+        startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);
     }
 
     private void showMentorSelectionDialog() {
@@ -494,4 +521,5 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
             lastClicked.setText(fmtTime.format(calendar.getTime()));
         }
     };
+
 }
