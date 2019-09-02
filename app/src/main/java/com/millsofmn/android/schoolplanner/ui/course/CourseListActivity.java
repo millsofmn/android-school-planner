@@ -24,6 +24,8 @@ import android.view.View;
 public class CourseListActivity extends AppCompatActivity implements CourseListAdapter.OnCourseListener {
     public static final int EDIT_COURSE_REQUEST = 1;
 
+    public static final String COURSE_ID_EXTRA = "course_id";
+    public static final String COURSE_TITLE_EXTRA = "course_title";
     public static final String TERM_ID_EXTRA = "term_id";
     public static final String TERM_TITLE_EXTRA = "term_title";
 
@@ -84,7 +86,7 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
         Intent intent = new Intent(this, CourseDetailsActivity.class);
         Course selectedCourse = courseListAdapter.getSelectedCourse(position);
         intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
-        intent.putExtra(CourseActivity.COURSE_ID_EXTRA, selectedCourse.getId());
+        intent.putExtra(CourseListActivity.COURSE_ID_EXTRA, selectedCourse.getId());
 
         startActivityForResult(intent, EDIT_COURSE_REQUEST);
 //        startActivity(intent);

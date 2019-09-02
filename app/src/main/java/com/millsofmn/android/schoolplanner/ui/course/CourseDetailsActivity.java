@@ -78,12 +78,20 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private TextView tvCourseEndTime;
     private CheckBox cbCourseAlertOnEnd;
     private RecyclerView rvCourseMentors;
+    private TextView tvCourseLblAddMentors;
     private RecyclerView rvCourseAssmt;
     private TextView tvCourseNotes;
     private EditText etCourseNotes;
 
+    private CourseAssmtListAdapter courseAssmtListAdapter;
+    private CourseMentorListAdapter courseMentorListAdapter;
+
+    private Observer<List<Mentor>> mentorObserver;
+    private Observer<List<CourseMentor>> courseMentorObserver;
+    private Observer<Course> courseObserver;
+
     private TextView lastClicked;
-    private List<Mentor> mentorsList = new ArrayList<>();
+    private List<Mentor> allMentorsList = new ArrayList<>();
     private List<Mentor> selectedMentors = new ArrayList<>();
     private List<CourseMentor> courseMentors = new ArrayList<>();
 
@@ -99,19 +107,14 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        courseId = getIntent().getIntExtra(CourseActivity.COURSE_ID_EXTRA, -1);
-        termId = getIntent().getIntExtra(CourseListActivity.TERM_ID_EXTRA, -1);
-        Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
 
+        // View Models
         assessmentViewModel = ViewModelProviders.of(this).get(AssessmentViewModel.class);
         courseMentorViewModel = ViewModelProviders.of(this).get(CourseMentorViewModel.class);
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
 
-
-        Observer<List<Mentor>> mentorObserver = m -> mentorsList.addAll(m);
-        mentorViewModel.findAll().observe(this, mentorObserver);
-
+        // Ui
         tvCourseTitle = findViewById(R.id.tv_course_title);
         etCourseTitle = findViewById(R.id.et_course_title);
 
@@ -119,55 +122,102 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         tvCourseStartDate = findViewById(R.id.btn_course_start_date);
         tvCourseStartTime = findViewById(R.id.tv_course_start_time);
         cbCourseAlertOnStart = findViewById(R.id.cb_course_alert_on_start);
+
         tvCourseEndDate = findViewById(R.id.btn_course_end_date);
         tvCourseEndTime = findViewById(R.id.tv_course_end_time);
         cbCourseAlertOnEnd = findViewById(R.id.cb_course_alert_on_end);
+
         tvCourseNotes = findViewById(R.id.tv_course_notes);
         etCourseNotes = findViewById(R.id.et_course_notes);
+
         rvCourseMentors = findViewById(R.id.rv_course_mentors);
-        rvCourseAssmt = findViewById(R.id.rv_course_assmt);
-
-        if (courseId > -1) {
-            initForm();
-        }
-        setEditable(true);
-    }
-
-    private void initForm() {
-        CourseMentorListAdapter courseMentorListAdapter = new CourseMentorListAdapter(this);
+        courseMentorListAdapter = new CourseMentorListAdapter(this);
         rvCourseMentors.setAdapter(courseMentorListAdapter);
         rvCourseMentors.setLayoutManager(new LinearLayoutManager(this));
+
+        tvCourseLblAddMentors = findViewById(R.id.tv_course_lbl_add_mentors);
+        tvCourseLblAddMentors.setOnClickListener(v -> showMentorSelectionDialog());
+
+        rvCourseAssmt = findViewById(R.id.rv_course_assmt);
+        courseAssmtListAdapter = new CourseAssmtListAdapter(this);
+        rvCourseAssmt.setAdapter(courseAssmtListAdapter);
+        rvCourseAssmt.setLayoutManager(new LinearLayoutManager(this));
+
+        // Listeners
+        tvCourseTitle.setOnClickListener(view -> {
+            tvCourseTitle.setVisibility(View.GONE);
+            etCourseTitle.setVisibility(View.VISIBLE);
+        });
+
+        tvCourseStatus.setOnClickListener(v -> showCourseStatusDialog());
+
+        tvCourseStartDate.setOnClickListener(v -> showDatePickerDialog(tvCourseStartDate));
+        tvCourseStartTime.setOnClickListener(v -> showTimePickerDialog(tvCourseStartTime));
+
+        tvCourseEndDate.setOnClickListener(v -> showDatePickerDialog(tvCourseEndDate));
+        tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
+
+        tvCourseNotes.setOnClickListener(view -> {
+            tvCourseNotes.setVisibility(View.GONE);
+            etCourseNotes.setVisibility(View.VISIBLE);
+        });
+
+        // Observers
+        mentorObserver = m -> allMentorsList.addAll(m);
+        courseMentorObserver = cms -> courseMentors.addAll(cms);
+        courseObserver = course -> {
+            thisCourse = course;
+            setCourseDetails(course);
+        };
+
+        // Preload
+        mentorViewModel.findAll().observe(this, mentorObserver);
+
+        if (getIncomingIntent()) {
+            loadCourseDetails();
+        } else {
+            thisCourse = new Course();
+        }
+    }
+
+    private boolean getIncomingIntent() {
+
+        if (!getIntent().hasExtra(CourseListActivity.TERM_ID_EXTRA)) {
+            throw new RuntimeException("I don't know how you got here but it's bad!");
+        }
+
+        termId = getIntent().getIntExtra(CourseListActivity.TERM_ID_EXTRA, -1);
+
+        if (getIntent().hasExtra(CourseListActivity.COURSE_ID_EXTRA)) {
+            courseId = getIntent().getIntExtra(CourseListActivity.COURSE_ID_EXTRA, -1);
+            Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
+
+            return true;
+        }
+        return false;
+    }
+
+    private void loadCourseDetails() {
+        courseViewModel.findById(courseId).observe(this, courseObserver);
+
+        assessmentViewModel.findByCourseId(courseId).observe(this,
+                assessments -> courseAssmtListAdapter.setData(assessments));
 
         mentorViewModel.findByCourseId(courseId).observe(this, mentors -> {
             selectedMentors.addAll(mentors);
             courseMentorListAdapter.setData(mentors);
+            if(mentors.isEmpty()){
+                tvCourseLblAddMentors.setVisibility(View.VISIBLE);
+            } else {
+                tvCourseLblAddMentors.setVisibility(View.GONE);
+            }
         });
 
-        Observer<List<CourseMentor>> courseMentorObserver = cms -> courseMentors.addAll(cms);
         courseMentorViewModel.findByCourseId(courseId).observe(this, courseMentorObserver);
-
-
-        CourseAssmtListAdapter courseAssmtListAdapter = new CourseAssmtListAdapter(this);
-        rvCourseAssmt.setAdapter(courseAssmtListAdapter);
-        rvCourseAssmt.setLayoutManager(new LinearLayoutManager(this));
-
-        assessmentViewModel.findByCourseId(courseId).observe(this, assessments -> courseAssmtListAdapter.setData(assessments));
-
-        Observer<Course> courseObserver = course -> {
-            thisCourse = course;
-            if (thisCourse != null) {
-                if (thisCourse.getTitle() != null && !thisCourse.getTitle().isEmpty()) {
-                    setTitle("Course Details");
-                    setCourseDetails(course);
-                }
-            }
-        };
-        courseViewModel.findById(courseId).observe(this, courseObserver);
-
-
     }
 
     private void setCourseDetails(Course course) {
+        setTitle("Course Details");
         tvCourseTitle.setText(course.getTitle());
         tvCourseTitle.setVisibility(View.VISIBLE);
         etCourseTitle.setText(course.getTitle());
@@ -206,30 +256,27 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
             etEditable = View.GONE;
         }
 
-        tvCourseTitle.setOnClickListener(view -> {
-            tvCourseTitle.setVisibility(View.GONE);
-            etCourseTitle.setVisibility(View.VISIBLE);
-        });
 
-        tvCourseStatus.setOnClickListener(v -> showCourseStatusDialog());
-
-        tvCourseStartDate.setOnClickListener(v -> showDatePickerDialog(tvCourseStartDate));
-        tvCourseStartTime.setOnClickListener(v -> showTimePickerDialog(tvCourseStartTime));
-
-        tvCourseEndDate.setOnClickListener(v -> showDatePickerDialog(tvCourseEndDate));
-        tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
-
-        tvCourseNotes.setOnClickListener(view -> {
-            tvCourseNotes.setVisibility(View.GONE);
-            etCourseNotes.setVisibility(View.VISIBLE);
-        });
     }
 
+    // MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_course_details, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (courseEditable) {
+            menu.findItem(R.id.item_course_save).setVisible(true);
+            menu.findItem(R.id.item_course_edit).setVisible(false);
+        } else {
+            menu.findItem(R.id.item_course_save).setVisible(false);
+            menu.findItem(R.id.item_course_edit).setVisible(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -250,6 +297,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         }
     }
 
+    // Persistence
     private void saveCourse() {
         if (!TextUtils.isEmpty(etCourseTitle.getText()) && termId > -1) {
 
@@ -298,24 +346,6 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         }
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (courseEditable) {
-            menu.findItem(R.id.item_course_save).setVisible(true);
-            menu.findItem(R.id.item_course_edit).setVisible(false);
-        } else {
-            menu.findItem(R.id.item_course_save).setVisible(false);
-            menu.findItem(R.id.item_course_edit).setVisible(true);
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onClick(int position) {
-        if (courseEditable) {
-            showMentorSelectionDialog();
-        }
-    }
 
     private void showDeleteCourseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -335,6 +365,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         builder.show();
     }
 
+    // STATUS DIALOG
     private void showCourseStatusDialog() {
         String[] courseStatuses = getResources().getStringArray(R.array.course_statuses);
         int idx = IntStream.range(0, courseStatuses.length)
@@ -351,14 +382,21 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         builder.show();
     }
 
+    // MENTOR DIALOG
+
+    @Override
+    public void onClick(int position) {
+        showMentorSelectionDialog();
+    }
+
     private void showMentorSelectionDialog() {
         List<Integer> selectedMentorsIndexList = new ArrayList<>();
 
-        String[] them = new String[mentorsList.size()];
-        boolean[] themChecked = new boolean[mentorsList.size()];
+        String[] them = new String[allMentorsList.size()];
+        boolean[] themChecked = new boolean[allMentorsList.size()];
 
-        for (int i = 0; i < mentorsList.size(); i++) {
-            Mentor mentor = mentorsList.get(i);
+        for (int i = 0; i < allMentorsList.size(); i++) {
+            Mentor mentor = allMentorsList.get(i);
             them[i] = mentor.getName();
 
             Mentor checked = selectedMentors.stream().filter(mentor1 -> mentor.getId() == mentor1.getId()).findAny().orElse(null);
@@ -391,7 +429,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                         selectedMentors.clear();
 
                         for (int x : selectedMentorsIndexList) {
-                            Mentor mentor = mentorsList.get(x);
+                            Mentor mentor = allMentorsList.get(x);
                             selectedMentors.add(mentor);
                             Log.i(TAG, "Selected " + mentor.getName());
                         }
@@ -408,6 +446,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     }
 
 
+    // DATE PICKER
     private void showDatePickerDialog(TextView lastClicked) {
         this.lastClicked = lastClicked;
         final Calendar calendar = Calendar.getInstance();
