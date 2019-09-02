@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_assmt"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AssessmentActivity">
@@ -25,6 +26,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/sv_assmt_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -36,6 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/app_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_assmt_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -45,18 +48,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:text="Assessment"
+                android:hint="Assessment Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_assmt_title" />
 
             <EditText
                 android:id="@+id/et_assmt_title"
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
-                android:text="Course 101"
+                android:hint="Assessment Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Objective"
+                android:hint="Set Assessment Type"
                 app:layout_constraintStart_toEndOf="@+id/tv_assmt_lbl_type"
                 app:layout_constraintTop_toBottomOf="@+id/tv_assmt_title" />
 
@@ -98,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:text="Monday, Aug 1, 2019"
+                android:hint="Set Due Date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_assmt_lbl_date" />
 
@@ -107,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="12:00 PM"
+                android:hint="Set Time"
                 app:layout_constraintStart_toEndOf="@+id/tv_assmt_date"
                 app:layout_constraintTop_toTopOf="@+id/tv_assmt_date" />
 

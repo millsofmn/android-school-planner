@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -82,6 +83,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private CheckBox cbCourseAlertOnEnd;
     private RecyclerView rvCourseMentors;
     private TextView tvCourseLblAddMentors;
+    private ImageButton ibCourseAddAssmt;
     private RecyclerView rvCourseAssmt;
     private TextView tvCourseNotes;
     private EditText etCourseNotes;
@@ -147,6 +149,8 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         rvCourseAssmt.setAdapter(courseAssmtListAdapter);
         rvCourseAssmt.setLayoutManager(new LinearLayoutManager(this));
 
+        ibCourseAddAssmt = findViewById(R.id.ib_course_add_assmt);
+
         // Listeners
         constraintLayout.setOnClickListener(view -> {
             disableEditing();
@@ -165,6 +169,8 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
         tvCourseEndDate.setOnClickListener(v -> showDatePickerDialog(tvCourseEndDate));
         tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
+
+        ibCourseAddAssmt.setOnClickListener(v -> createNewCourseAssessment());
 
         tvCourseNotes.setOnClickListener(view -> {
             tvCourseNotes.setVisibility(View.GONE);
@@ -414,6 +420,12 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         Intent intent = new Intent(this, AssessmentActivity.class);
         intent.putExtra(AssessmentActivity.COURSE_ID_EXTRA, courseId);
         intent.putExtra(AssessmentActivity.ASSMT_ID_SELECTED, selectedAssessment.getId());
+        startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);
+    }
+
+    private void createNewCourseAssessment(){
+        Intent intent = new Intent(this, AssessmentActivity.class);
+        intent.putExtra(AssessmentActivity.COURSE_ID_EXTRA, courseId);
         startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);
     }
 

@@ -216,6 +216,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_course_notes" />
 
+        <ImageButton
+            android:id="@+id/ib_course_add_assmt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_course_lbl_assmt"
+            app:layout_constraintTop_toBottomOf="@+id/rv_course_mentors"
+            app:srcCompat="@drawable/ic_add_small" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

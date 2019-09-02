@@ -1,17 +1,10 @@
 package com.millsofmn.android.schoolplanner;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,8 +12,17 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 import com.millsofmn.android.schoolplanner.viewmodel.AssessmentViewModel;
@@ -35,6 +37,7 @@ import java.util.Locale;
 import java.util.stream.IntStream;
 
 public class AssessmentActivity extends AppCompatActivity {
+    private static final String TAG = "Assessment Activity";
 
     private static final String DATE_FORMAT = "EEEE, MMM d, yyyy";
     private static final String TIME_FORMAT = "h:mm a";
@@ -48,6 +51,9 @@ public class AssessmentActivity extends AppCompatActivity {
 
     private AssessmentViewModel assessmentViewModel;
 
+    private ConstraintLayout clAssmt;
+    private ScrollView svAssmtView;
+
     private TextView tvAssmtTitle;
     private EditText etAssmtTitle;
     private TextView tvAssmtType;
@@ -55,9 +61,9 @@ public class AssessmentActivity extends AppCompatActivity {
     private TextView tvAssmtTime;
     private CheckBox cbAssmtAlert;
 
+    private Assessment thisAssessment;
     private int courseId;
     private int assessmentId;
-    private Assessment thisAssessment;
 
     private TextView lastClicked;
 
@@ -72,8 +78,9 @@ public class AssessmentActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        setTitle("Assessment");
-
+        // ui
+        svAssmtView = findViewById(R.id.sv_assmt_view);
+        clAssmt = findViewById(R.id.cl_assmt);
         tvAssmtTitle = findViewById(R.id.tv_assmt_title);
         etAssmtTitle = findViewById(R.id.et_assmt_title);
         tvAssmtType = findViewById(R.id.tv_assmt_type);
@@ -81,13 +88,26 @@ public class AssessmentActivity extends AppCompatActivity {
         tvAssmtTime = findViewById(R.id.tv_assmt_time);
         cbAssmtAlert = findViewById(R.id.cb_assmt_alert);
 
+        // view model
         assessmentViewModel = ViewModelProviders.of(this).get(AssessmentViewModel.class);
         Observer<Assessment> assessmentObserver = assessment -> {
-            thisAssessment = assessment;
-            if(assessment != null){
+            if (assessment != null) {
+                thisAssessment = assessment;
                 setAssessment(assessment);
             }
         };
+
+        // listeners
+        svAssmtView.setOnClickListener(v -> {
+            etAssmtTitle.setVisibility(View.GONE);
+            tvAssmtTitle.setVisibility(View.VISIBLE);
+            save();
+        });
+        clAssmt.setOnClickListener(v -> {
+            etAssmtTitle.setVisibility(View.GONE);
+            tvAssmtTitle.setVisibility(View.VISIBLE);
+            save();
+        });
 
         tvAssmtTitle.setOnClickListener(v -> {
             etAssmtTitle.setVisibility(View.VISIBLE);
@@ -99,10 +119,12 @@ public class AssessmentActivity extends AppCompatActivity {
         tvAssmtType.setOnClickListener(v -> showAssessmentTypeDialog());
 
         courseId = getIntent().getIntExtra(COURSE_ID_EXTRA, -1);
-        if(getIntent().hasExtra(ASSMT_ID_SELECTED)){
-            assessmentId = getIntent().getIntExtra(ASSMT_ID_SELECTED, -1);
-            assessmentViewModel.findById(assessmentId).observe(this, assessmentObserver);
+        assessmentId = getIntent().getIntExtra(ASSMT_ID_SELECTED, -1);
 
+        if (assessmentId > -1) {
+            assessmentViewModel.findById(assessmentId).observe(this, assessmentObserver);
+        } else {
+            tvAssmtTitle.setVisibility(View.GONE);
         }
     }
 
@@ -111,7 +133,7 @@ public class AssessmentActivity extends AppCompatActivity {
         etAssmtTitle.setText(assessment.getTitle());
         tvAssmtType.setText(assessment.getPerformanceType());
 
-        if(assessment.getDueDate() != null) {
+        if (assessment.getDueDate() != null) {
             tvAssmtDate.setText(fmtDate.format(assessment.getDueDate()));
             tvAssmtTime.setText(fmtTime.format(assessment.getDueDate()));
         }
@@ -136,48 +158,78 @@ public class AssessmentActivity extends AppCompatActivity {
                 showDeleteCourseDialog();
                 return true;
             case R.id.item_course_save:
-                saveCourse();
-                finish();
+                if (save()) finish();
                 return true;
             default:
-//                saveCourse();
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void saveCourse() {
-        if(!TextUtils.isEmpty(etAssmtTitle.getText())){
+    private boolean save() {
+        if (isValid()) {
 
-            Assessment assessment;
-            if(thisAssessment == null){
-                assessment = new Assessment();
-            } else {
-                assessment = thisAssessment;
-            }
+            Assessment assessment = new Assessment();
 
             assessment.setTitle(etAssmtTitle.getText().toString());
             assessment.setCourseId(courseId);
             assessment.setPerformanceType(tvAssmtType.getText().toString());
 
-            String startString = tvAssmtDate.getText().toString() + " " + tvAssmtTime.getText().toString();
-            LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
-            assessment.setDueDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+            if (!TextUtils.isEmpty(tvAssmtDate.getText())) {
+
+                String timeString;
+                if (TextUtils.isEmpty(tvAssmtTime.getText())) {
+                    timeString = "12:15 AM";
+                } else {
+                    timeString = tvAssmtTime.getText().toString();
+                }
+                String startString = tvAssmtDate.getText().toString() + " " + timeString;
+
+                LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
+                assessment.setDueDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+            }
 
             assessment.setAlertOnDueDate(cbAssmtAlert.isChecked());
 
-            if(assessmentId > -1){
+            if (assessmentId > -1) {
+                Log.i(TAG, "Updating new Assessment " + assessmentId);
+                assessment.setId(assessmentId);
                 assessmentViewModel.update(assessment);
             } else {
+                Log.i(TAG, "Inserting new Assessment");
                 assessmentViewModel.insert(assessment);
             }
+            return true;
         }
+
+        return false;
+    }
+
+    private boolean isValid() {
+        boolean valid = true;
+
+
+        if (TextUtils.isEmpty(etAssmtTitle.getText())) {
+            etAssmtTitle.setError("Assessment title is required.");
+            valid = false;
+        } else {
+            etAssmtTitle.setError(null);
+        }
+
+        if (TextUtils.isEmpty(tvAssmtType.getText())) {
+            tvAssmtType.setError("Assessment type is required.");
+            valid = false;
+        } else {
+            tvAssmtType.setError(null);
+        }
+
+        return valid;
     }
 
     private void showDeleteCourseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Delete Course?");
         builder.setPositiveButton("Delete", (dialogInterface, i) -> {
-            if(thisAssessment != null) {
+            if (thisAssessment != null) {
                 assessmentViewModel.delete(thisAssessment);
             }
             finish();
