@@ -225,7 +225,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
     private void showDeleteCourseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Delete Course?");
+        builder.setMessage("Delete assessment?");
         builder.setPositiveButton("Delete", (dialogInterface, i) -> {
             if (thisAssessment != null) {
                 assessmentViewModel.delete(thisAssessment);

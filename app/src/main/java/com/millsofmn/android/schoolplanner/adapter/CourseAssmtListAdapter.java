@@ -7,16 +7,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CourseAssmtListAdapter  extends RecyclerView.Adapter<CourseAssmtListAdapter.ViewHolder> {
+    private static final DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
 
     private List<Assessment> data = new ArrayList<>();
 
@@ -28,19 +32,38 @@ public class CourseAssmtListAdapter  extends RecyclerView.Adapter<CourseAssmtLis
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_assmt_details, parent, false);
 
-        return new ViewHolder(linearLayout, onListener);
+        return new ViewHolder(cardView, onListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LinearLayout cardView = (LinearLayout)holder.view;
+        CardView cardView = (CardView)holder.view;
 
-        Assessment mentor = data.get(position);
+        TextView tvTitle = cardView.findViewById(R.id.tv_ass_title);
+        tvTitle.setText(data.get(position).getTitle());
 
-        TextView courseTitle = cardView.findViewById(R.id.tv_line_item);
-        courseTitle.setText(mentor.getTitle() + " (" + mentor.getPerformanceType() + ")");
+        TextView tvPerformanceType = cardView.findViewById(R.id.tv_ass_performance_type);
+        tvPerformanceType.setText(data.get(position).getPerformanceType());
+
+
+        TextView courseDates = cardView.findViewById(R.id.tv_ass_due_date);
+        TextView alert = cardView.findViewById(R.id.tv_ass_alert);
+
+        if(data.get(position).getDueDate() != null){
+            courseDates.setText(dateFormat.format(data.get(position).getDueDate()));
+
+            if(data.get(position).isAlertOnDueDate()){
+                alert.setText("Alert On");
+            } else {
+                alert.setText("Alert Off");
+            }
+
+        } else {
+            courseDates.setVisibility(View.GONE);
+            alert.setVisibility(View.GONE);
+        }
     }
 
     @Override

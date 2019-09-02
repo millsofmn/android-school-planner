@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,14 +29,14 @@ public class CourseMentorListAdapter extends RecyclerView.Adapter<CourseMentorLi
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+        CardView linearLayout = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
 
         return new ViewHolder(linearLayout, onListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LinearLayout cardView = (LinearLayout)holder.view;
+        CardView cardView = (CardView) holder.view;
 
         Mentor mentor = (Mentor)data.get(position);
 

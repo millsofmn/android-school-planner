@@ -23,6 +23,7 @@ import android.view.View;
 
 public class CourseListActivity extends AppCompatActivity implements CourseListAdapter.OnCourseListener {
     public static final int EDIT_COURSE_REQUEST = 1;
+    public static final int NEW_COURSE_REQUEST = 2;
 
     public static final String COURSE_ID_EXTRA = "course_id";
     public static final String COURSE_TITLE_EXTRA = "course_title";
@@ -52,8 +53,10 @@ public class CourseListActivity extends AppCompatActivity implements CourseListA
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(CourseListActivity.this, CourseDetailsActivity.class);
+                intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
+
+                startActivityForResult(intent, NEW_COURSE_REQUEST);
             }
         });
 

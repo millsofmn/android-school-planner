@@ -80,6 +80,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private TextView tvCourseEndDate;
     private TextView tvCourseEndTime;
     private CheckBox cbCourseAlertOnEnd;
+    private TextView tvCourseLblMentors;
     private RecyclerView rvCourseMentors;
     private TextView tvCourseLblAddMentors;
     private ImageButton ibCourseAddAssmt;
@@ -98,6 +99,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private List<Mentor> allMentorsList = new ArrayList<>();
     private List<Mentor> selectedMentors = new ArrayList<>();
     private List<CourseMentor> courseMentors = new ArrayList<>();
+
 
 
     @Override
@@ -134,6 +136,9 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
         tvCourseNotes = findViewById(R.id.tv_course_notes);
         etCourseNotes = findViewById(R.id.et_course_notes);
+
+        tvCourseLblMentors = findViewById(R.id.tv_course_lbl_mentors);
+        tvCourseLblMentors.setOnClickListener(v -> showMentorSelectionDialog());
 
         rvCourseMentors = findViewById(R.id.rv_course_mentors);
         courseMentorListAdapter = new CourseMentorListAdapter(this);
@@ -192,8 +197,12 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         if (getIncomingIntent()) {
             loadCourseDetails();
         } else {
-            thisCourse = new Course();
+            setNewCourse();
         }
+    }
+
+    private void setNewCourse() {
+
     }
 
     private boolean getIncomingIntent() {
