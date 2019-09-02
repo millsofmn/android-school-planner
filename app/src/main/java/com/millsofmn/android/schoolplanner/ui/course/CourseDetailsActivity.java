@@ -20,7 +20,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +31,10 @@ import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.adapter.CourseAssmtListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.CourseMentorListAdapter;
 import com.millsofmn.android.schoolplanner.db.entity.Course;
+import com.millsofmn.android.schoolplanner.db.entity.CourseMentor;
+import com.millsofmn.android.schoolplanner.db.entity.Mentor;
 import com.millsofmn.android.schoolplanner.viewmodel.AssessmentViewModel;
+import com.millsofmn.android.schoolplanner.viewmodel.CourseMentorViewModel;
 import com.millsofmn.android.schoolplanner.viewmodel.CourseViewModel;
 import com.millsofmn.android.schoolplanner.viewmodel.MentorViewModel;
 
@@ -38,7 +43,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -53,6 +60,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private static final DateTimeFormatter fmtDateTime = DateTimeFormatter.ofPattern(DATE_FORMAT + " " + TIME_FORMAT);
 
     private AssessmentViewModel assessmentViewModel;
+    private CourseMentorViewModel courseMentorViewModel;
     private CourseViewModel courseViewModel;
     private MentorViewModel mentorViewModel;
 
@@ -75,6 +83,10 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private TextView tvCourseNotes;
 
     private TextView lastClicked;
+    private List<Mentor> mentorsList = new ArrayList<>();
+    private List<Mentor> selectedMentors = new ArrayList<>();
+    private List<CourseMentor> courseMentors = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +104,13 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
 
         assessmentViewModel = ViewModelProviders.of(this).get(AssessmentViewModel.class);
+        courseMentorViewModel = ViewModelProviders.of(this).get(CourseMentorViewModel.class);
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
         mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
+
+
+        Observer<List<Mentor>> mentorObserver = m -> mentorsList.addAll(m);
+        mentorViewModel.findAll().observe(this, mentorObserver);
 
         tvCourseTitle = findViewById(R.id.tv_course_title);
         etCourseTitle = findViewById(R.id.et_course_title);
@@ -118,7 +135,14 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         rvCourseMentors.setAdapter(courseMentorListAdapter);
         rvCourseMentors.setLayoutManager(new LinearLayoutManager(this));
 
-        mentorViewModel.findByCourseId(courseId).observe(this, mentors -> courseMentorListAdapter.setData(mentors));
+        mentorViewModel.findByCourseId(courseId).observe(this, mentors -> {
+            selectedMentors.addAll(mentors);
+            courseMentorListAdapter.setData(mentors);
+        });
+
+        Observer<List<CourseMentor>> courseMentorObserver = cms -> courseMentors.addAll(cms);
+        courseMentorViewModel.findByCourseId(courseId).observe(this, courseMentorObserver);
+
 
         CourseAssmtListAdapter courseAssmtListAdapter = new CourseAssmtListAdapter(this);
         rvCourseAssmt.setAdapter(courseAssmtListAdapter);
@@ -182,6 +206,8 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
             tvCourseEndDate.setOnClickListener(v -> showDatePickerDialog(tvCourseEndDate));
             tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
+
+
         } else {
             tvCourseStatus.setOnClickListener(null);
 
@@ -190,6 +216,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
             tvCourseEndDate.setOnClickListener(null);
             tvCourseEndTime.setOnClickListener(null);
+
         }
     }
 
@@ -257,6 +284,17 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         setEditable(false);
     }
 
+    private void saveMentors(){
+        for(CourseMentor cm : courseMentors){
+            courseMentorViewModel.delete(cm);
+        }
+
+        for(Mentor mentor : selectedMentors){
+            CourseMentor courseMentor = new CourseMentor(courseId, mentor.getId());
+            courseMentorViewModel.insert(courseMentor);
+        }
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (courseEditable) {
@@ -271,7 +309,9 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     @Override
     public void onClick(int position) {
-
+        if(courseEditable){
+            showMentorSelectionDialog();
+        }
     }
 
     private void showDeleteCourseDialog() {
@@ -306,8 +346,62 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     }
 
     private void showMentorSelectionDialog(){
+        List<Integer> selectedMentorsIndexList = new ArrayList<>();
 
+        String[] them = new String[mentorsList.size()];
+        boolean[] themChecked = new boolean[mentorsList.size()];
+
+        for(int i = 0; i < mentorsList.size(); i++){
+            Mentor mentor = mentorsList.get(i);
+            them[i] = mentor.getName();
+
+            Mentor checked = selectedMentors.stream().filter(mentor1 -> mentor.getId() == mentor1.getId()).findAny().orElse(null);
+
+            if(checked != null){
+                themChecked[i] = true;
+                selectedMentorsIndexList.add(i);
+            } else {
+                themChecked[i] = false;
+            }
+        }
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Select Mentors for Class")
+                .setMultiChoiceItems(them, themChecked,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which, boolean isChecked) {
+                                if(isChecked){
+                                    selectedMentorsIndexList.add(which);
+                                } else if(selectedMentorsIndexList.contains(which)){
+                                    selectedMentorsIndexList.remove(Integer.valueOf(which));
+                                }
+                            }
+                        })
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedMentors.clear();
+
+                        for(int x : selectedMentorsIndexList){
+                            Mentor mentor = mentorsList.get(x);
+                            selectedMentors.add(mentor);
+                            Log.i(TAG, "Selected " + mentor.getName());
+                        }
+                        saveMentors();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        builder.show();
     }
+
+
     private void showDatePickerDialog(TextView lastClicked) {
         this.lastClicked = lastClicked;
         final Calendar calendar = Calendar.getInstance();

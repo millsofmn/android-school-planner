@@ -46,6 +46,22 @@ public class CourseMentor implements Parcelable {
         mentorId = in.readInt();
     }
 
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public int getMentorId() {
+        return mentorId;
+    }
+
+    public void setMentorId(int mentorId) {
+        this.mentorId = mentorId;
+    }
+
     public static final Creator<CourseMentor> CREATOR = new Creator<CourseMentor>() {
         @Override
         public CourseMentor createFromParcel(Parcel in) {
