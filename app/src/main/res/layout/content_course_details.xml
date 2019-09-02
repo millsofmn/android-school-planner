@@ -9,8 +9,9 @@
     tools:showIn="@layout/activity_course_details">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_course_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -195,9 +196,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
             android:gravity="top"
             android:inputType="textMultiLine"
             android:text="Notes and notes about things going on in here"
+            app:layout_constraintBottom_toTopOf="@+id/et_course_notes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_course_lbl_notes" />
 

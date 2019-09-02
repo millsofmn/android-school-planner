@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,11 +64,10 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     private Course thisCourse;
 
-    private boolean courseEditable = false;
-
     private int courseId;
     private int termId;
 
+    private ConstraintLayout constraintLayout;
     private TextView tvCourseTitle;
     private EditText etCourseTitle;
     private TextView tvCourseStatus;
@@ -107,6 +107,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
+        constraintLayout = findViewById(R.id.cl_course_layout);
 
         // View Models
         assessmentViewModel = ViewModelProviders.of(this).get(AssessmentViewModel.class);
@@ -144,6 +145,11 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         rvCourseAssmt.setLayoutManager(new LinearLayoutManager(this));
 
         // Listeners
+        constraintLayout.setOnClickListener(view -> {
+            disableEditing();
+            saveCourse();
+        });
+
         tvCourseTitle.setOnClickListener(view -> {
             tvCourseTitle.setVisibility(View.GONE);
             etCourseTitle.setVisibility(View.VISIBLE);
@@ -240,21 +246,26 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     }
 
-    private void setEditable(boolean editable) {
-        this.courseEditable = editable;
+    private void disableEditing() {
+
+        tvCourseTitle.setVisibility(View.VISIBLE);
+        etCourseTitle.setVisibility(View.GONE);
+
+        tvCourseNotes.setVisibility(View.VISIBLE);
+        etCourseNotes.setVisibility(View.GONE);
 
         supportInvalidateOptionsMenu();
 
-        int tvEditable;
-        int etEditable;
-
-        if (courseEditable) {
-            tvEditable = View.GONE;
-            etEditable = View.VISIBLE;
-        } else {
-            tvEditable = View.VISIBLE;
-            etEditable = View.GONE;
-        }
+//        int tvEditable;
+//        int etEditable;
+//
+//        if (courseEditable) {
+//            tvEditable = View.GONE;
+//            etEditable = View.VISIBLE;
+//        } else {
+//            tvEditable = View.VISIBLE;
+//            etEditable = View.GONE;
+//        }
 
 
     }
@@ -268,31 +279,20 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (courseEditable) {
-            menu.findItem(R.id.item_course_save).setVisible(true);
-            menu.findItem(R.id.item_course_edit).setVisible(false);
-        } else {
-            menu.findItem(R.id.item_course_save).setVisible(false);
-            menu.findItem(R.id.item_course_edit).setVisible(true);
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.item_course_delete:
                 showDeleteCourseDialog();
                 return true;
-            case R.id.item_course_edit:
-                setEditable(true);
-                return true;
+//            case R.id.item_course_edit:
+//                disableEditing();
+//                return true;
             case R.id.item_course_save:
                 saveCourse();
                 return true;
             default:
+                saveCourse();
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -300,6 +300,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     // Persistence
     private void saveCourse() {
         if (!TextUtils.isEmpty(etCourseTitle.getText()) && termId > -1) {
+            Log.i(TAG, "Saving ..........");
 
             try {
                 Course course;
@@ -332,7 +333,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                 e.printStackTrace();
             }
         }
-        setEditable(false);
+        disableEditing();
     }
 
     private void saveMentors() {
