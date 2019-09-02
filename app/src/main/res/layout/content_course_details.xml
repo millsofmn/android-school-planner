@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:text="Course 101"
+            android:hint="Course 101"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_course_title" />
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
-            android:text="Course 101"
+            android:hint="Course 101"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Status"
+            android:hint="Set Course Status"
             app:layout_constraintStart_toEndOf="@+id/tv_course_lbl_status"
             app:layout_constraintTop_toBottomOf="@+id/tv_course_title" />
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:text="Monday, Aug 1, 2019"
+            android:hint="Set Start Date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_course_lbl_dates" />
 
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="12:00 PM"
+            android:hint="Set Time"
             app:layout_constraintStart_toEndOf="@+id/btn_course_start_date"
             app:layout_constraintTop_toTopOf="@+id/btn_course_start_date" />
 
@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:text="Monday, Aug 26, 2019"
+            android:hint="Set End Date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cb_course_alert_on_start" />
 
@@ -112,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="1:00 AM"
+            android:hint="Set Time"
             app:layout_constraintStart_toEndOf="@+id/btn_course_end_date"
             app:layout_constraintTop_toTopOf="@+id/btn_course_end_date" />
 
@@ -204,7 +204,7 @@
             android:layout_marginBottom="24dp"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:text="Notes and notes about things going on in here"
+            android:hint="Course Notes ..."
             app:layout_constraintBottom_toTopOf="@+id/et_course_notes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -218,7 +218,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="24dp"
-            android:hint="Course Notes"
+            android:hint="Course Notes ..."
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -232,6 +232,16 @@
             app:layout_constraintStart_toEndOf="@+id/tv_course_lbl_assmt"
             app:layout_constraintTop_toBottomOf="@+id/rv_course_mentors"
             app:srcCompat="@drawable/ic_add_small" />
+
+        <ImageButton
+            android:id="@+id/ib_course_share_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_course_lbl_notes"
+            app:layout_constraintTop_toBottomOf="@+id/rv_course_assmt"
+            app:srcCompat="@drawable/ic_share" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -87,6 +87,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private RecyclerView rvCourseAssmt;
     private TextView tvCourseNotes;
     private EditText etCourseNotes;
+    private ImageButton ibCourseShareNote;
 
     private CourseAssmtListAdapter courseAssmtListAdapter;
     private CourseMentorListAdapter courseMentorListAdapter;
@@ -99,8 +100,6 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     private List<Mentor> allMentorsList = new ArrayList<>();
     private List<Mentor> selectedMentors = new ArrayList<>();
     private List<CourseMentor> courseMentors = new ArrayList<>();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +153,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         rvCourseAssmt.setLayoutManager(new LinearLayoutManager(this));
 
         ibCourseAddAssmt = findViewById(R.id.ib_course_add_assmt);
+        ibCourseShareNote = findViewById(R.id.ib_course_share_note);
 
         // Listeners
         constraintLayout.setOnClickListener(view -> {
@@ -175,6 +175,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         tvCourseEndTime.setOnClickListener(v -> showTimePickerDialog(tvCourseEndTime));
 
         ibCourseAddAssmt.setOnClickListener(v -> createNewCourseAssessment());
+        ibCourseShareNote.setOnClickListener(v -> shareNote());
 
         tvCourseNotes.setOnClickListener(view -> {
             tvCourseNotes.setVisibility(View.GONE);
@@ -186,7 +187,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         courseMentorObserver = cms -> courseMentors.addAll(cms);
         courseObserver = course -> {
             thisCourse = course;
-            if(course != null){
+            if (course != null) {
                 setCourseDetails(course);
             }
         };
@@ -201,8 +202,32 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         }
     }
 
-    private void setNewCourse() {
+    private void shareNote() {
+        String title = tvCourseTitle.getText().toString();
+        String note = tvCourseNotes.getText().toString();
 
+        String msg = "Here are my notes of the course " + title + ":\n" + note;
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, msg);
+        startActivity(intent);
+    }
+
+    private void setNewCourse() {
+        tvCourseLblMentors.setOnClickListener(null);
+        rvCourseMentors.setVisibility(View.INVISIBLE);
+
+        tvCourseLblAddMentors.setVisibility(View.INVISIBLE);
+
+        rvCourseAssmt.setVisibility(View.INVISIBLE);
+        ibCourseAddAssmt.setVisibility(View.INVISIBLE);
+
+        tvCourseTitle.setVisibility(View.GONE);
+        etCourseTitle.setVisibility(View.VISIBLE);
+
+        tvCourseNotes.setVisibility(View.GONE);
+        etCourseNotes.setVisibility(View.VISIBLE);
     }
 
     private boolean getIncomingIntent() {
@@ -213,10 +238,10 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
         termId = getIntent().getIntExtra(CourseListActivity.TERM_ID_EXTRA, -1);
 
-        if (getIntent().hasExtra(CourseListActivity.COURSE_ID_EXTRA)) {
-            courseId = getIntent().getIntExtra(CourseListActivity.COURSE_ID_EXTRA, -1);
-            Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
+        courseId = getIntent().getIntExtra(CourseListActivity.COURSE_ID_EXTRA, -1);
+        Log.i(TAG, "CourseId=" + courseId + ", TermId=" + termId);
 
+        if (courseId > -1) {
             return true;
         }
         return false;
@@ -231,7 +256,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         mentorViewModel.findByCourseId(courseId).observe(this, mentors -> {
             selectedMentors.addAll(mentors);
             courseMentorListAdapter.setData(mentors);
-            if(mentors.isEmpty()){
+            if (mentors.isEmpty()) {
                 tvCourseLblAddMentors.setVisibility(View.VISIBLE);
             } else {
                 tvCourseLblAddMentors.setVisibility(View.GONE);
@@ -250,12 +275,16 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
         tvCourseStatus.setText(course.getStatus());
 
-        tvCourseStartDate.setText(fmtDate.format(course.getStartDate()));
-        tvCourseStartTime.setText(fmtTime.format(course.getStartDate()));
+        if(course.getStartDate() != null) {
+            tvCourseStartDate.setText(fmtDate.format(course.getStartDate()));
+            tvCourseStartTime.setText(fmtTime.format(course.getStartDate()));
+        }
         cbCourseAlertOnStart.setChecked(course.isAlertOnStartDate());
 
-        tvCourseEndDate.setText(fmtDate.format(course.getEndDate()));
-        tvCourseEndTime.setText(fmtTime.format(course.getEndDate()));
+        if(course.getEndDate() != null) {
+            tvCourseEndDate.setText(fmtDate.format(course.getEndDate()));
+            tvCourseEndTime.setText(fmtTime.format(course.getEndDate()));
+        }
         cbCourseAlertOnEnd.setChecked(course.isAlertOnEndDate());
 
         tvCourseNotes.setText(course.getNotes());
@@ -267,8 +296,11 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 
     private void disableEditing() {
 
-        tvCourseTitle.setVisibility(View.VISIBLE);
+        tvCourseTitle.setText(etCourseTitle.getText());
+        tvCourseNotes.setText(etCourseNotes.getText());
+
         etCourseTitle.setVisibility(View.GONE);
+        tvCourseTitle.setVisibility(View.VISIBLE);
 
         tvCourseNotes.setVisibility(View.VISIBLE);
         etCourseNotes.setVisibility(View.GONE);
@@ -320,7 +352,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
 //                disableEditing();
 //                return true;
             case R.id.item_course_save:
-                saveCourse();
+                if (saveCourse()) finish();
                 return true;
             default:
                 saveCourse();
@@ -328,43 +360,82 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         }
     }
 
+    private boolean isValid() {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(etCourseTitle.getText())) {
+            etCourseTitle.setError("Course title is required!");
+            valid = false;
+        } else {
+            etCourseTitle.setError(null);
+        }
+
+
+        return valid;
+    }
+
     // Persistence
-    private void saveCourse() {
-        if (!TextUtils.isEmpty(etCourseTitle.getText()) && termId > -1) {
+    private boolean saveCourse() {
+        if (isValid()) {
             Log.i(TAG, "Saving ..........");
 
             try {
-                Course course;
+                Course thisCourse = new Course();
 
-                if (courseId > -1) {
-                    course = thisCourse;
-                } else {
-                    course = new Course();
-                }
+                thisCourse.setTermId(termId);
 
                 thisCourse.setTitle(etCourseTitle.getText().toString());
                 thisCourse.setStatus(tvCourseStatus.getText().toString());
 
-                String startString = tvCourseStartDate.getText().toString() + " " + tvCourseStartTime.getText().toString();
-                LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
-                thisCourse.setStartDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
-                thisCourse.setAlertOnStartDate(cbCourseAlertOnStart.isChecked());
+                if (!TextUtils.isEmpty(tvCourseStartDate.getText())) {
+                    String timeString;
+                    if (TextUtils.isEmpty(tvCourseStartTime.getText())) {
+                        timeString = "12:10 AM";
+                    } else {
+                        timeString = tvCourseStartTime.getText().toString();
+                    }
+                    String startString = tvCourseStartDate.getText().toString() + " " + timeString;
 
-                String endString = tvCourseEndDate.getText().toString() + " " + tvCourseEndTime.getText().toString();
-                LocalDateTime endDateTime = LocalDateTime.parse(endString, fmtDateTime);
-                thisCourse.setEndDate(Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
-                thisCourse.setAlertOnEndDate(cbCourseAlertOnEnd.isChecked());
+                    LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
+                    thisCourse.setStartDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+                    thisCourse.setAlertOnStartDate(cbCourseAlertOnStart.isChecked());
+                }
+
+                if (!TextUtils.isEmpty(tvCourseEndDate.getText())) {
+                    String timeString;
+                    if (TextUtils.isEmpty(tvCourseEndTime.getText())) {
+                        timeString = "12:12 AM";
+                    } else {
+                        timeString = tvCourseEndTime.getText().toString();
+                    }
+                    String endString = tvCourseEndDate.getText().toString() + " " + timeString;
+
+                    LocalDateTime endDateTime = LocalDateTime.parse(endString, fmtDateTime);
+                    thisCourse.setEndDate(Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+                    thisCourse.setAlertOnEndDate(cbCourseAlertOnEnd.isChecked());
+                }
 
                 thisCourse.setNotes(etCourseNotes.getText().toString());
 
-                courseViewModel.update(thisCourse);
 
+                if (courseId > -1) {
+                    Log.i(TAG, "Updating ... " + courseId);
+                    thisCourse.setId(courseId);
+                    courseViewModel.update(thisCourse);
+                } else {
+                    Log.i(TAG, "Inserting ... ");
+                    courseViewModel.insert(thisCourse);
+                    courseId = thisCourse.getId();
+                    Log.i(TAG, "Inserted ... " + courseId);
+                }
+                disableEditing();
+                return true;
             } catch (Exception e) {
                 Log.i(TAG, "Error parsing " + e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
-        disableEditing();
+        return false;
     }
 
     private void saveMentors() {
@@ -431,7 +502,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);
     }
 
-    private void createNewCourseAssessment(){
+    private void createNewCourseAssessment() {
         Intent intent = new Intent(this, AssessmentActivity.class);
         intent.putExtra(AssessmentActivity.COURSE_ID_EXTRA, courseId);
         startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);

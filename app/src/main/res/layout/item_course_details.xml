@@ -28,7 +28,6 @@
                 android:layout_weight="50"
                 android:lines="1"
                 android:padding="10dp"
-                android:text="Course Title"
                 android:textSize="16sp" />
 
             <TextView
@@ -38,7 +37,6 @@
                 android:layout_weight="50"
                 android:lines="1"
                 android:padding="10dp"
-                android:text="Course status"
                 android:textSize="16sp" />
 
         </LinearLayout>
@@ -49,7 +47,6 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:padding="10dp"
-            android:text="Nov 2017 to Jan 2018"
             android:textSize="12sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
