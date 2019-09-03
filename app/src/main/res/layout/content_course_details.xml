@@ -43,6 +43,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:text="Status:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_course_title" />
 
@@ -50,11 +51,11 @@
             android:id="@+id/sp_course_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:hint="Set Course Status"
-            app:layout_constraintStart_toEndOf="@+id/tv_course_lbl_status"
-            app:layout_constraintTop_toBottomOf="@+id/tv_course_title" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_course_lbl_status" />
 
         <TextView
             android:id="@+id/tv_course_lbl_dates"
@@ -218,6 +219,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="24dp"
+            android:inputType="textMultiLine"
             android:hint="Course Notes ..."
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

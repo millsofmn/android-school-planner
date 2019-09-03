@@ -46,9 +46,18 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Vi
         courseTitle.setText(data.get(position).getTitle());
 
         TextView courseDates = cardView.findViewById(R.id.tv_course_dates);
+
+        String startDate = "(Start date not set)";
         if(data.get(position).getStartDate() != null){
-            courseDates.setText(dateFormat.format(data.get(position).getStartDate()) + " to " + dateFormat.format(data.get(position).getEndDate()));
+            startDate = dateFormat.format(data.get(position).getStartDate());
         }
+
+        String endDate = "(End date not set)";
+        if(data.get(position).getEndDate() != null){
+            endDate = dateFormat.format(data.get(position).getEndDate());
+        }
+
+        courseDates.setText(startDate + " to " + endDate);
 
         TextView courseStatus = cardView.findViewById(R.id.sp_course_status);
         courseStatus.setText(data.get(position).getStatus());
