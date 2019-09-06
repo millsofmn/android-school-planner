@@ -44,8 +44,8 @@ public class TermListActivity extends AppCompatActivity  implements TermListAdap
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener((view) -> {
-//            Intent intent = new Intent(this, TermDetailsActivity.class);
-//            startActivityForResult(intent, ADD_MENTOR_REQUEST);
+            Intent intent = new Intent(this, TermDetailsActivity.class);
+            startActivityForResult(intent, ADD_MENTOR_REQUEST);
         });
 
         termViewModel = ViewModelProviders.of(this).get(TermViewModel.class);

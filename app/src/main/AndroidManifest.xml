@@ -9,10 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.course.AssessmentActivity"
+        <activity
+            android:name=".ui.term.TermDetailsActivity"
+            android:label="Term Details"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.course.CourseListActivity"/>
+        <activity
+            android:name=".ui.course.AssessmentActivity"
             android:label="Assessment"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.course.CourseDetailsActivity"/>
+            android:parentActivityName=".ui.course.CourseDetailsActivity" />
         <activity
             android:name=".ui.course.CourseDetailsActivity"
             android:label="@string/title_activity_course_details"

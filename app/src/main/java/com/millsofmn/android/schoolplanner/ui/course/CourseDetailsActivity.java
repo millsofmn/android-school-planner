@@ -306,19 +306,6 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         etCourseNotes.setVisibility(View.GONE);
 
         supportInvalidateOptionsMenu();
-
-//        int tvEditable;
-//        int etEditable;
-//
-//        if (courseEditable) {
-//            tvEditable = View.GONE;
-//            etEditable = View.VISIBLE;
-//        } else {
-//            tvEditable = View.VISIBLE;
-//            etEditable = View.GONE;
-//        }
-
-
     }
 
     // MENU
@@ -328,18 +315,6 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         inflater.inflate(R.menu.menu_course_details, menu);
         return true;
     }
-
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        if (courseEditable) {
-//            menu.findItem(R.id.item_course_save).setVisible(true);
-//            menu.findItem(R.id.item_course_edit).setVisible(false);
-//        } else {
-//            menu.findItem(R.id.item_course_save).setVisible(false);
-//            menu.findItem(R.id.item_course_edit).setVisible(true);
-//        }
-//        return super.onPrepareOptionsMenu(menu);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
