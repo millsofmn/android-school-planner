@@ -9,12 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
+
         <activity
             android:name=".ui.term.TermDetailsActivity"
             android:label="Term Details"
-            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.course.CourseListActivity"/>
+            android:parentActivityName=".ui.course.CourseListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.course.AssessmentActivity"
             android:label="Assessment"

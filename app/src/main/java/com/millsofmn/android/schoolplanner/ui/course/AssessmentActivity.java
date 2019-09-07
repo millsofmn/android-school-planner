@@ -1,7 +1,11 @@
 package com.millsofmn.android.schoolplanner.ui.course;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.millsofmn.android.schoolplanner.MyReceiver;
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 import com.millsofmn.android.schoolplanner.viewmodel.AssessmentViewModel;
@@ -184,6 +189,10 @@ public class AssessmentActivity extends AppCompatActivity {
 
                 LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
                 assessment.setDueDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+
+                if(cbAssmtAlert.isChecked() && LocalDateTime.now().isBefore(startDateTime)){
+                    scheduleAlarm(startDateTime, "Your assessment " + thisAssessment.getTitle() + " is due.");
+                }
             }
 
             assessment.setAlertOnDueDate(cbAssmtAlert.isChecked());
@@ -316,4 +325,17 @@ public class AssessmentActivity extends AppCompatActivity {
         }
     };
 
+    private void scheduleAlarm(LocalDateTime time, String msg) {
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, MyReceiver.class);
+        intent.putExtra(MyReceiver.ALERT_TITLE, "Assessment Due");
+        intent.putExtra(MyReceiver.ALERT_MESSAGE, msg);
+        intent.putExtra(CourseListActivity.COURSE_ID_EXTRA, courseId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 852, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), pendingIntent);
+
+    }
 }

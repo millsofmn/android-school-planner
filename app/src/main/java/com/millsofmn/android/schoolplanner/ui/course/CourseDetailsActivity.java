@@ -1,7 +1,10 @@
 package com.millsofmn.android.schoolplanner.ui.course;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.millsofmn.android.schoolplanner.MyReceiver;
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.adapter.CourseAssmtListAdapter;
 import com.millsofmn.android.schoolplanner.adapter.CourseMentorListAdapter;
@@ -35,6 +39,7 @@ import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 import com.millsofmn.android.schoolplanner.db.entity.Course;
 import com.millsofmn.android.schoolplanner.db.entity.CourseMentor;
 import com.millsofmn.android.schoolplanner.db.entity.Mentor;
+import com.millsofmn.android.schoolplanner.ui.main.MainActivity;
 import com.millsofmn.android.schoolplanner.viewmodel.AssessmentViewModel;
 import com.millsofmn.android.schoolplanner.viewmodel.CourseMentorViewModel;
 import com.millsofmn.android.schoolplanner.viewmodel.CourseViewModel;
@@ -54,11 +59,15 @@ import java.util.stream.IntStream;
 public class CourseDetailsActivity extends AppCompatActivity implements CourseMentorListAdapter.OnListener, CourseAssmtListAdapter.OnListener {
     private static final String TAG = "CourseDetailsActivity+++";
 
+    public static final int START_ALARM_REQUEST_CODE = 123;
+    public static final int END_ALARM_REQUEST_CODE = 456;
+
     private static final String DATE_FORMAT = "EEEE, MMM d, yyyy";
     private static final String TIME_FORMAT = "h:mm a";
     private static final SimpleDateFormat fmtDate = new SimpleDateFormat(DATE_FORMAT);
     private static final SimpleDateFormat fmtTime = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
     private static final DateTimeFormatter fmtDateTime = DateTimeFormatter.ofPattern(DATE_FORMAT + " " + TIME_FORMAT);
+    private static final String COURSE_MESSAGE = "course_message";
 
     private AssessmentViewModel assessmentViewModel;
     private CourseMentorViewModel courseMentorViewModel;
@@ -374,6 +383,10 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                     LocalDateTime startDateTime = LocalDateTime.parse(startString, fmtDateTime);
                     thisCourse.setStartDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
                     thisCourse.setAlertOnStartDate(cbCourseAlertOnStart.isChecked());
+
+                    if(cbCourseAlertOnStart.isChecked() && LocalDateTime.now().isBefore(startDateTime)){
+                        scheduleAlarm(startDateTime, "Your course " + thisCourse.getTitle() + " has started.", START_ALARM_REQUEST_CODE);
+                    }
                 }
 
                 if (!TextUtils.isEmpty(tvCourseEndDate.getText())) {
@@ -388,6 +401,10 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                     LocalDateTime endDateTime = LocalDateTime.parse(endString, fmtDateTime);
                     thisCourse.setEndDate(Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant()));
                     thisCourse.setAlertOnEndDate(cbCourseAlertOnEnd.isChecked());
+
+                    if(cbCourseAlertOnEnd.isChecked() && LocalDateTime.now().isBefore(endDateTime)){
+                        scheduleAlarm(endDateTime, "Your course " + thisCourse.getTitle() + " has ended.", END_ALARM_REQUEST_CODE);
+                    }
                 }
 
                 thisCourse.setNotes(etCourseNotes.getText().toString());
@@ -411,6 +428,22 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
             }
         }
         return false;
+    }
+
+    private void scheduleAlarm(LocalDateTime time, String msg, int requestCode) {
+        Log.i(TAG, "Scheduling course alert : " + msg);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, MyReceiver.class);
+        intent.putExtra(MyReceiver.ALERT_TITLE, "Course Action");
+        intent.putExtra(MyReceiver.ALERT_MESSAGE, msg);
+        intent.putExtra(CourseListActivity.TERM_ID_EXTRA, termId);
+        intent.putExtra(CourseListActivity.COURSE_ID_EXTRA, courseId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), pendingIntent);
+
     }
 
     private void saveMentors() {
@@ -472,14 +505,14 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         Assessment selectedAssessment = courseAssmtListAdapter.getSelectedItem(position);
 
         Intent intent = new Intent(this, AssessmentActivity.class);
-        intent.putExtra(AssessmentActivity.COURSE_ID_EXTRA, courseId);
+        intent.putExtra(CourseListActivity.COURSE_ID_EXTRA, courseId);
         intent.putExtra(AssessmentActivity.ASSMT_ID_SELECTED, selectedAssessment.getId());
         startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);
     }
 
     private void createNewCourseAssessment() {
         Intent intent = new Intent(this, AssessmentActivity.class);
-        intent.putExtra(AssessmentActivity.COURSE_ID_EXTRA, courseId);
+        intent.putExtra(CourseListActivity.COURSE_ID_EXTRA, courseId);
         startActivityForResult(intent, AssessmentActivity.EDIT_ASSMT_REQUEST);
     }
 
