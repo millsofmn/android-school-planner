@@ -62,6 +62,13 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Vi
         TextView courseStatus = cardView.findViewById(R.id.sp_course_status);
         courseStatus.setText(data.get(position).getStatus());
 
+        TextView courseNotes = cardView.findViewById(R.id.tv_course_notes);
+
+        if(!data.get(position).getNotes().isEmpty()){
+            courseNotes.setText(data.get(position).getNotes());
+        } else {
+            courseNotes.setVisibility(View.GONE);
+        }
     }
 
     @Override

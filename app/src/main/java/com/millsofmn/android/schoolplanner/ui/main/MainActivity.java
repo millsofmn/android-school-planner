@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.millsofmn.android.schoolplanner.R;
 import com.millsofmn.android.schoolplanner.db.entity.Assessment;
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         mentorViewModel.deleteAll();
         courseViewModel.deleteAll();
         termViewModel.deleteAll();
+
+        Toast.makeText(getApplicationContext(), "Database Deleted", Toast.LENGTH_SHORT).show();
     }
 
     private void populateDb(){
@@ -92,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         for (Mentor mentor : DatabaseSeedViewModel.getMentors()) {
             mentorViewModel.insert(mentor);
         }
-
 
         for (CourseMentor courseMentor : DatabaseSeedViewModel.getCourseMentors()) {
             courseMentorViewModel.insert(courseMentor);

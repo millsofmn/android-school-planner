@@ -104,12 +104,17 @@ public class AssessmentActivity extends AppCompatActivity {
         constraintLayout.setOnClickListener(view -> {
             etAssmtTitle.setVisibility(View.GONE);
             tvAssmtTitle.setVisibility(View.VISIBLE);
-            save();
+            tvAssmtTitle.setText(etAssmtTitle.getText());
+
+            if(assessmentId > -1){
+                save();
+            }
         });
 
         tvAssmtTitle.setOnClickListener(v -> {
             etAssmtTitle.setVisibility(View.VISIBLE);
             tvAssmtTitle.setVisibility(View.GONE);
+            etAssmtTitle.setText(tvAssmtTitle.getText());
         });
 
         tvAssmtDate.setOnClickListener(v -> showDatePickerDialog(tvAssmtDate));
@@ -191,7 +196,7 @@ public class AssessmentActivity extends AppCompatActivity {
                 assessment.setDueDate(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant()));
 
                 if(cbAssmtAlert.isChecked() && LocalDateTime.now().isBefore(startDateTime)){
-                    scheduleAlarm(startDateTime, "Your assessment " + thisAssessment.getTitle() + " is due.");
+                    scheduleAlarm(startDateTime, "Your assessment " + assessment.getTitle() + " is due.");
                 }
             }
 

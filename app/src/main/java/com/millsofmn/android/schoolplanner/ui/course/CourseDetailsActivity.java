@@ -227,7 +227,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
         tvCourseLblMentors.setOnClickListener(null);
         rvCourseMentors.setVisibility(View.INVISIBLE);
 
-        tvCourseLblAddMentors.setVisibility(View.INVISIBLE);
+        tvCourseLblAddMentors.setText("Must save before mentors can be added.");
 
         rvCourseAssmt.setVisibility(View.INVISIBLE);
         ibCourseAddAssmt.setVisibility(View.INVISIBLE);
@@ -537,9 +537,15 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
             }
         }
 
+        String title;
+        if(allMentorsList.size() == 0){
+            title = "Mentors must be added before they can be assigned.";
+        } else {
+            title = "Select Mentor(s) for Class.";
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle("Select Mentors for Class")
+                .setTitle(title)
                 .setMultiChoiceItems(them, themChecked,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override

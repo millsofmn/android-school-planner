@@ -3,7 +3,6 @@ package com.millsofmn.android.schoolplanner.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +28,7 @@ public class CourseMentorListAdapter extends RecyclerView.Adapter<CourseMentorLi
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView linearLayout = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+        CardView linearLayout = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course_mentor, parent, false);
 
         return new ViewHolder(linearLayout, onListener);
     }
@@ -40,8 +39,14 @@ public class CourseMentorListAdapter extends RecyclerView.Adapter<CourseMentorLi
 
         Mentor mentor = (Mentor)data.get(position);
 
-        TextView courseTitle = cardView.findViewById(R.id.tv_line_item);
-        courseTitle.setText(mentor.getName());
+        TextView tvMentorName = cardView.findViewById(R.id.tv_line_1);
+        tvMentorName.setText(mentor.getName());
+
+        TextView tvEmail = cardView.findViewById(R.id.tv_line_2);
+        tvEmail.setText("E: " + mentor.getEmailAddress());
+
+        TextView tvPhone = cardView.findViewById(R.id.tv_line_3);
+        tvPhone.setText("P: " + mentor.getPhoneNumber());
     }
 
 
