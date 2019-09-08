@@ -403,6 +403,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
                     thisCourse.setAlertOnEndDate(cbCourseAlertOnEnd.isChecked());
 
                     if(cbCourseAlertOnEnd.isChecked() && LocalDateTime.now().isBefore(endDateTime)){
+                        Log.i(TAG, "Adding another one =======");
                         scheduleAlarm(endDateTime, "Your course " + thisCourse.getTitle() + " has ended.", END_ALARM_REQUEST_CODE);
                     }
                 }
@@ -431,7 +432,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements CourseMe
     }
 
     private void scheduleAlarm(LocalDateTime time, String msg, int requestCode) {
-        Log.i(TAG, "Scheduling course alert : " + msg);
+        Log.i(TAG, "Scheduling course alert ............ : " + msg);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(this, MyReceiver.class);

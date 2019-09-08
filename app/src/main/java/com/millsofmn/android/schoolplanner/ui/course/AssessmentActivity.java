@@ -331,6 +331,7 @@ public class AssessmentActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MyReceiver.class);
         intent.putExtra(MyReceiver.ALERT_TITLE, "Assessment Due");
         intent.putExtra(MyReceiver.ALERT_MESSAGE, msg);
+        intent.putExtra(ASSMT_ID_SELECTED, assessmentId);
         intent.putExtra(CourseListActivity.COURSE_ID_EXTRA, courseId);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 852, intent, PendingIntent.FLAG_UPDATE_CURRENT);
