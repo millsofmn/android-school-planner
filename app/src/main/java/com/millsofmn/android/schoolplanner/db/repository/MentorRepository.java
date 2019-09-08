@@ -49,6 +49,10 @@ public class MentorRepository {
         return dao.findByCourseId(courseId);
     }
 
+    public void deleteAll() {
+        new deleteAllAsyncTask(dao).execute();
+    }
+
     private static class insertAsyncTask extends AsyncTask<Mentor, Void, Void> {
         private MentorDao asyncTaskDao;
 
@@ -76,6 +80,21 @@ public class MentorRepository {
             return null;
         }
     }
+
+    private static class deleteAllAsyncTask extends AsyncTask<Mentor, Void, Void> {
+        private MentorDao asyncTaskDao;
+
+        public deleteAllAsyncTask(MentorDao dao) {
+            this.asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Mentor... params){
+            asyncTaskDao.deleteAll();
+            return null;
+        }
+    }
+
     private static class updateAsyncTask extends AsyncTask<Mentor, Void, Void> {
         private MentorDao asyncTaskDao;
 

@@ -45,6 +45,10 @@ public class TermRepository {
         return all;
     }
 
+    public void deleteAll() {
+        new deleteAllAsyncTask(dao).execute();
+    }
+
     private static class insertAsyncTask extends AsyncTask<Term, Void, Void> {
         private TermDao asyncTaskDao;
 
@@ -72,6 +76,21 @@ public class TermRepository {
             return null;
         }
     }
+
+    private static class deleteAllAsyncTask extends AsyncTask<Term, Void, Void> {
+        private TermDao asyncTaskDao;
+
+        public deleteAllAsyncTask(TermDao dao) {
+            this.asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Term... params){
+            asyncTaskDao.deleteAll();
+            return null;
+        }
+    }
+
     private static class updateAsyncTask extends AsyncTask<Term, Void, Void> {
         private TermDao asyncTaskDao;
 

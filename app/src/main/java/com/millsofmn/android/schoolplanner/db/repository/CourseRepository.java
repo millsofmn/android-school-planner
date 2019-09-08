@@ -53,6 +53,10 @@ public class CourseRepository {
         return dao.findById(courseId);
     }
 
+    public void deleteAll() {
+        new deleteAllAsyncTask(dao).execute();
+    }
+
     private static class insertAsyncTask extends AsyncTask<Course, Void, Void> {
         private CourseDao asyncTaskDao;
 
@@ -80,6 +84,21 @@ public class CourseRepository {
             return null;
         }
     }
+
+    private static class deleteAllAsyncTask extends AsyncTask<Course, Void, Void> {
+        private CourseDao asyncTaskDao;
+
+        public deleteAllAsyncTask(CourseDao dao) {
+            this.asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Course... params){
+            asyncTaskDao.deleteAll();
+            return null;
+        }
+    }
+
     private static class updateAsyncTask extends AsyncTask<Course, Void, Void> {
         private CourseDao asyncTaskDao;
 

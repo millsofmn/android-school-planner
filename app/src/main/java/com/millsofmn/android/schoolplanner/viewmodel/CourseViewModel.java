@@ -48,4 +48,8 @@ public class CourseViewModel extends AndroidViewModel {
     public LiveData<Course> findById(int courseId) {
         return repository.findById(courseId);
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

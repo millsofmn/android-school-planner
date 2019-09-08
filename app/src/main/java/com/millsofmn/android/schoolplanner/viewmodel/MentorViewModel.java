@@ -48,4 +48,8 @@ public class MentorViewModel extends AndroidViewModel {
     public LiveData<List<Mentor>> findByCourseId(int courseId){
         return repository.findByCourseId(courseId);
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

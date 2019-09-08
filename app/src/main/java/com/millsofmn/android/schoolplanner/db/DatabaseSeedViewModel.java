@@ -1,6 +1,5 @@
 package com.millsofmn.android.schoolplanner.db;
 
-
 import com.millsofmn.android.schoolplanner.db.entity.Assessment;
 import com.millsofmn.android.schoolplanner.db.entity.Course;
 import com.millsofmn.android.schoolplanner.db.entity.CourseMentor;
@@ -13,8 +12,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class DatabaseSeed {
-
+public class DatabaseSeedViewModel {
+    public static final String TAG = "Database Seed ....";
 
     private static Date getDate(int diff) {
         GregorianCalendar cal = new GregorianCalendar();

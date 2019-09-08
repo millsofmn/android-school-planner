@@ -45,9 +45,19 @@ public class TermListAdapter extends RecyclerView.Adapter<TermListAdapter.ViewHo
         termTitle.setText(data.get(position).getTitle());
 
         TextView termDates = cardView.findViewById(R.id.tv_term_dates);
+
+        String dateText = "";
         if (data.get(position).getStartDate() != null) {
-            termDates.setText(dateFormat.format(data.get(position).getStartDate()) + " to " + dateFormat.format(data.get(position).getEndDate()));
+            dateText = dateFormat.format(data.get(position).getStartDate());
         }
+
+        if(data.get(position).getEndDate() != null){
+            if(!dateText.isEmpty()){
+                dateText +=  " to ";
+            }
+            dateText += dateFormat.format(data.get(position).getEndDate());
+        }
+        termDates.setText(dateText);
     }
 
     @Override

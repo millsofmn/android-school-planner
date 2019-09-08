@@ -57,7 +57,7 @@ public abstract class SchoolPlannerDatabase extends RoomDatabase {
                                     context.getApplicationContext(),
                                     SchoolPlannerDatabase.class,
                                     "school_planner_database")
-                            .addCallback(schoolPlannerDatabaseCallback) // todo remove
+//                            .addCallback(schoolPlannerDatabaseCallback)
                             .build();
                 }
             }
@@ -97,24 +97,24 @@ public abstract class SchoolPlannerDatabase extends RoomDatabase {
             courseDao.deleteAll();
             termDao.deleteAll();
 
-            for (Term term : DatabaseSeed.getTerms()) {
+            for (Term term : DatabaseSeedViewModel.getTerms()) {
                 termDao.insert(term);
             }
 
-            for (Course course : DatabaseSeed.getCourses()) {
+            for (Course course : DatabaseSeedViewModel.getCourses()) {
                 courseDao.insert(course);
             }
 
-            for (Assessment assessment : DatabaseSeed.getAssessments()) {
+            for (Assessment assessment : DatabaseSeedViewModel.getAssessments()) {
                 assessmentDao.insert(assessment);
             }
 
-            for (Mentor mentor : DatabaseSeed.getMentors()) {
+            for (Mentor mentor : DatabaseSeedViewModel.getMentors()) {
                 mentorDao.insert(mentor);
             }
 
 
-            for (CourseMentor courseMentor : DatabaseSeed.getCourseMentors()) {
+            for (CourseMentor courseMentor : DatabaseSeedViewModel.getCourseMentors()) {
                 courseMentorDao.insert(courseMentor);
             }
 

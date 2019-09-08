@@ -43,4 +43,8 @@ public class TermViewModel extends AndroidViewModel {
     public LiveData<Term> findById(int id){
         return repository.findById(id);
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }
